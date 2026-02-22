@@ -1,14 +1,15 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import ColorSet from "./lib/ColorSet.svelte";
-    import Toast from "./lib/Toast.svelte";
-    import { ALL_SETS } from "./lib/data/colorSets";
+    import { onMount } from 'svelte';
+    import { version } from '../package.json';
+    import ColorSet from './lib/ColorSet.svelte';
+    import Toast from './lib/Toast.svelte';
+    import { ALL_SETS } from './lib/data/colorSets';
 
-    let sortOrder = $state("name");
-    let theme = $state("system");
-    let searchTerm = $state("");
+    let sortOrder = $state('name');
+    let theme = $state('system');
+    let searchTerm = $state('');
 
-    let toastMessage = $state("");
+    let toastMessage = $state('');
     let toastVisible = $state(false);
     let toastSuccess = $state(true);
     let toastX = $state(0);
@@ -17,23 +18,23 @@
 
     function updateTheme(newTheme: string) {
         theme = newTheme;
-        localStorage.setItem("theme", newTheme);
+        localStorage.setItem('theme', newTheme);
 
-        if (newTheme === "light") document.documentElement.setAttribute("data-theme", "light");
-        else if (newTheme === "dark") document.documentElement.setAttribute("data-theme", "dark");
-        else document.documentElement.removeAttribute("data-theme");
+        if (newTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else if (newTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        else document.documentElement.removeAttribute('data-theme');
     }
 
     onMount(() => {
-        const savedTheme = localStorage.getItem("theme") || "system";
+        const savedTheme = localStorage.getItem('theme') || 'system';
         updateTheme(savedTheme);
 
-        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-            if (theme === "system") updateTheme("system");
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (theme === 'system') updateTheme('system');
         });
     });
 
-    function handleCopy(text: string, success: boolean, message: string, x: number, y: number) {
+    function handleCopy(text: string, message: string, x: number, y: number) {
         navigator.clipboard
             .writeText(text)
             .then(() => {
@@ -43,7 +44,7 @@
             })
             .catch((err) => {
                 console.error(err);
-                toastMessage = "Copy failed!";
+                toastMessage = 'Copy failed!';
                 toastSuccess = false;
                 showToast(x, y);
             });
@@ -58,7 +59,7 @@
             () => {
                 toastVisible = false;
             },
-            toastSuccess ? 1500 : 2000
+            toastSuccess ? 1500 : 2000,
         );
     }
 </script>
@@ -66,7 +67,12 @@
 <header>
     <h1>Color Sets</h1>
     <div class="controls-container">
-        <input type="search" placeholder="Filter colors..." aria-label="Filter colors by name or hex" bind:value={searchTerm} />
+        <input
+            id="filterColors"
+            type="search"
+            placeholder="Filter colors..."
+            aria-label="Filter colors by name or hex"
+            bind:value={searchTerm} />
 
         <label for="sortOrder">Sort:</label>
         <select id="sortOrder" bind:value={sortOrder}>
@@ -76,7 +82,10 @@
         </select>
 
         <label for="themeSelector">Theme:</label>
-        <select id="themeSelector" value={theme} onchange={(e) => updateTheme(e.currentTarget.value)}>
+        <select
+            id="themeSelector"
+            value={theme}
+            onchange={(e) => updateTheme(e.currentTarget.value)}>
             <option value="system">System</option>
             <option value="light">Light</option>
             <option value="dark">Dark</option>
@@ -86,9 +95,22 @@
 
 <main>
     {#each ALL_SETS as set (set.id)}
-        <ColorSet title={set.title} id={set.id} rawData={set.data} useNameAsBg={set.useNameAsBg} {sortOrder} {searchTerm} onCopy={handleCopy} />
+        <ColorSet
+            title={set.title}
+            id={set.id}
+            rawData={set.data}
+            useNameAsBg={set.useNameAsBg}
+            {sortOrder}
+            {searchTerm}
+            onCopy={handleCopy} />
     {/each}
 </main>
+
+<footer>
+    <span>v{version}</span>
+    <a href="https://github.com/dcog989/Color-Sets" target="_blank" rel="noopener noreferrer"
+        >GitHub</a>
+</footer>
 
 <Toast message={toastMessage} visible={toastVisible} success={toastSuccess} x={toastX} y={toastY} />
 
@@ -111,7 +133,7 @@
 
     header h1 {
         color: var(--header-color);
-        font-family: "Source Code Pro", Consolas, "Courier New", Courier, monospace;
+        font-family: 'Source Code Pro', Consolas, 'Courier New', Courier, monospace;
         letter-spacing: 4px;
         margin: 0;
         font-size: 1.8em;
@@ -152,5 +174,22 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-muted);
+        font-size: 0.85em;
+    }
+
+    footer a {
+        color: var(--link-color);
+        text-decoration: none;
+        margin-left: 8px;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
     }
 </style>

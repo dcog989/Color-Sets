@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { ProcessedColor } from "./data/colorSets";
+    import type { ProcessedColor } from './data/colorSets';
 
     let { color, useNameForBg, onCopy } = $props<{
         color: ProcessedColor;
         useNameForBg: boolean;
-        onCopy: (text: string, success: boolean, message: string, x: number, y: number) => void;
+        onCopy: (text: string, message: string, x: number, y: number) => void;
     }>();
 
     // Threshold of 0.179 is the standard W3C point where
@@ -14,29 +14,52 @@
         return c.luminance > 0.179;
     }
 
-    function handleCopy(type: "name" | "hex", text: string, e: MouseEvent) {
+    function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
         e.stopPropagation();
-        let message = type === "name" ? `Copied "${text}"!` : `Copied ${text}!`;
-        onCopy(text, true, message, e.clientX, e.clientY);
+        let message = type === 'name' ? `Copied "${text}"!` : `Copied ${text}!`;
+        onCopy(text, message, e.clientX, e.clientY);
     }
 
     function handleItemClick(e: MouseEvent) {
-        handleCopy("hex", color.instance.toHex(), e);
+        handleCopy('hex', color.instance.toHex(), e);
     }
 </script>
 
-<li class="color-item {isLight(color) ? 'light-bg' : 'dark-bg'}" style="background-color: {useNameForBg ? color.name : color.instance.toHex()}">
-    <button type="button" class="item-bg-btn" aria-label="Copy {color.name} hex code" onclick={handleItemClick}></button>
+<li
+    class="color-item {isLight(color) ? 'light-bg' : 'dark-bg'}"
+    style="background-color: {useNameForBg ? color.name : color.instance.toHex()}">
+    <button
+        type="button"
+        class="item-bg-btn"
+        aria-label="Copy {color.name} hex code"
+        onclick={handleItemClick}></button>
 
     <div class="color-info">
-        <button type="button" class="color-name color-swatch-action text-btn" onclick={(e) => handleCopy("name", color.name, e)}>
+        <button
+            type="button"
+            class="color-name color-swatch-action text-btn"
+            onclick={(e) => handleCopy('name', color.name, e)}>
             {color.name}
         </button>
     </div>
 
-    <button type="button" class="color-copy-group color-swatch-action icon-btn" onclick={(e) => handleCopy("hex", color.instance.toHex(), e)} aria-label="Copy Hex Code">
+    <button
+        type="button"
+        class="color-copy-group color-swatch-action icon-btn"
+        onclick={(e) => handleCopy('hex', color.instance.toHex(), e)}
+        aria-label="Copy Hex Code">
         <span class="color-hex">{color.instance.toHex()}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="copy-icon">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
         </svg>
@@ -99,7 +122,7 @@
 
     .color-info {
         flex-grow: 1;
-        font-family: "Source Code Pro", Consolas, "Courier New", Courier, monospace;
+        font-family: 'Source Code Pro', Consolas, 'Courier New', Courier, monospace;
         font-size: 0.95em;
         display: flex;
         align-items: center;

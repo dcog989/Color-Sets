@@ -1,4 +1,36 @@
 {
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true
+  "css.lint.unknownAtRules": "ignore",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "eslint.options": {
+    "overrideConfig": {
+      "files": ["**/*.svelte"]
+    }
+  },
+  "eslint.useFlatConfig": true,
+  "eslint.validate": ["javascript", "typescript", "svelte"],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "files.associations": {
+    "*.css": "css",
+    "*.svelte": "svelte"
+  },
+  "scss.lint.unknownAtRules": "ignore",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  }
 }

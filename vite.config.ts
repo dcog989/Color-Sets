@@ -1,5 +1,5 @@
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { defineConfig } from 'vite'
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -10,5 +10,5 @@ export default defineConfig({
     },
     preview: {
         host: '127.0.0.1', // Forces IPv4 to make Firefox behave, not wait 2 seconds for IPv6
-    }
-})
+    },
+});

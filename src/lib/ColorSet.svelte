@@ -1,6 +1,6 @@
 <script lang="ts">
-    import ColorItem from "./ColorItem.svelte";
-    import { processColorSet } from "./data/colorSets";
+    import ColorItem from './ColorItem.svelte';
+    import { processColorSet } from './data/colorSets';
 
     let { title, id, rawData, useNameAsBg, sortOrder, searchTerm, onCopy } = $props<{
         title: string;
@@ -9,11 +9,11 @@
         useNameAsBg: boolean;
         sortOrder: string;
         searchTerm: string;
-        onCopy: (text: string, success: boolean, message: string, x: number, y: number) => void;
+        onCopy: (text: string, message: string, x: number, y: number) => void;
     }>();
 
-    // Process data once
-    let processedData = processColorSet(rawData, useNameAsBg);
+    // Process data once (props are static)
+    let processedData = $derived(processColorSet(rawData, useNameAsBg));
 
     // Filter & Sort Logic using derived state
     let finalData = $derived.by(() => {
@@ -24,15 +24,20 @@
         // 1. Filter
         if (searchTerm) {
             const q = searchTerm.toLowerCase();
-            data = data.filter((c) => c.name.toLowerCase().includes(q) || c.instance.toHex().toLowerCase().includes(q));
+            data = data.filter(
+                (c) =>
+                    c.name.toLowerCase().includes(q) ||
+                    c.instance.toHex().toLowerCase().includes(q),
+            );
         }
 
         // 2. Sort
         data.sort((a, b) => {
-            if (sortOrder === "luminosity") return b.luminance - a.luminance;
-            if (sortOrder === "hue") {
+            if (sortOrder === 'luminosity') return b.luminance - a.luminance;
+            if (sortOrder === 'hue') {
                 // Handle grayscale/achromatic colors first in hue sort
-                if (a.effectiveHue === -1 && b.effectiveHue === -1) return a.lightness - b.lightness;
+                if (a.effectiveHue === -1 && b.effectiveHue === -1)
+                    return a.lightness - b.lightness;
                 if (a.effectiveHue === -1) return 1;
                 if (b.effectiveHue === -1) return -1;
 
@@ -46,19 +51,24 @@
     });
 
     function copySetNames(e: MouseEvent) {
-        const text = finalData.map((c) => c.name).join("\n");
-        onCopy(text, true, `Copied ${finalData.length} names!`, e.clientX, e.clientY);
+        const text = finalData.map((c) => c.name).join('\n');
+        onCopy(text, `Copied ${finalData.length} names!`, e.clientX, e.clientY);
     }
 
     function copySetCSS(e: MouseEvent) {
         const themeName = title
             .toLowerCase()
-            .replace(/[\s/()]+/g, "-")
-            .replace(/-$/, "")
-            .replace(/--/g, "-");
-        const properties = finalData.map((c) => `    --${c.name.toLowerCase().replace(/[\s/]+/g, "-")}: ${c.instance.toHex()};`).join("\n");
+            .replace(/[\s/()]+/g, '-')
+            .replace(/-$/, '')
+            .replace(/--/g, '-');
+        const properties = finalData
+            .map(
+                (c) =>
+                    `    --${c.name.toLowerCase().replace(/[\s/]+/g, '-')}: ${c.instance.toHex()};`,
+            )
+            .join('\n');
         const text = `[data-theme="${themeName}"] {\n${properties}\n}`;
-        onCopy(text, true, "Copied as CSS theme block!", e.clientX, e.clientY);
+        onCopy(text, 'Copied as CSS theme block!', e.clientX, e.clientY);
     }
 </script>
 
@@ -69,9 +79,16 @@
                 {title}
                 <span class="legend-actions">
                     |
-                    <button type="button" class="legend-copy-action text-btn" onclick={copySetNames}> Copy Names </button>
+                    <button
+                        type="button"
+                        class="legend-copy-action text-btn"
+                        onclick={copySetNames}>
+                        Copy Names
+                    </button>
                     |
-                    <button type="button" class="legend-copy-action text-btn" onclick={copySetCSS}> Copy Hex Values </button>
+                    <button type="button" class="legend-copy-action text-btn" onclick={copySetCSS}>
+                        Copy Hex Values
+                    </button>
                 </span>
             </legend>
 

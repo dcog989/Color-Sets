@@ -1,0 +1,14 @@
+.assets/
+.context/
+.docs/
+.git/
+.husky/
+*.log
+*.tsbuildinfo
+build/
+bun.lock
+coverage/
+dist/
+node_modules/
+out/
+yarn.lock

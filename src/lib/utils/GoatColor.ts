@@ -33,18 +33,18 @@ const OKLAB_LMS_CUBED_TO_XYZ_MATRIX = [
     [-0.07637293665230801, -0.4214933235444953, 1.586161639400282],
 ];
 
-export const ALPHA_STYLE_HINT_PERCENT = "percent";
-export const ALPHA_STYLE_HINT_NUMBER = "number";
+export const ALPHA_STYLE_HINT_PERCENT = 'percent';
+export const ALPHA_STYLE_HINT_NUMBER = 'number';
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
 
 const round = (value: number | string, decimals = 0) => {
     const num = parseFloat(String(value));
     if (isNaN(num)) return value;
-    return Number(Math.round(Number(num + "e" + decimals)) + "e-" + decimals);
+    return Number(Math.round(Number(num + 'e' + decimals)) + 'e-' + decimals);
 };
 
-const isPercentage = (str: string | number) => typeof str === "string" && str.endsWith("%");
+const isPercentage = (str: string | number) => typeof str === 'string' && str.endsWith('%');
 
 function parseCssNumber(value: string | number, maxIfPercent = 255) {
     const strValue = String(value);
@@ -59,16 +59,19 @@ function parseHue(value: string | number) {
     const numValue = parseFloat(strValue);
     if (isNaN(numValue)) return 0;
 
-    const unitsPart = strValue.replace(/[\d.+\-eE]/g, "").trim().toLowerCase();
+    const unitsPart = strValue
+        .replace(/[\d.+\-eE]/g, '')
+        .trim()
+        .toLowerCase();
     let degreesValue;
 
-    if (unitsPart === "deg" || unitsPart === "°" || unitsPart === "") {
+    if (unitsPart === 'deg' || unitsPart === '°' || unitsPart === '') {
         degreesValue = numValue;
-    } else if (unitsPart === "rad") {
+    } else if (unitsPart === 'rad') {
         degreesValue = (numValue * 180) / Math.PI;
-    } else if (unitsPart === "grad") {
+    } else if (unitsPart === 'grad') {
         degreesValue = numValue * 0.9;
-    } else if (unitsPart === "turn") {
+    } else if (unitsPart === 'turn') {
         degreesValue = numValue * 360;
     } else {
         return 0;
@@ -80,24 +83,33 @@ function parseHue(value: string | number) {
 
 function parseHslPercentage(value: string | number) {
     const strValue = String(value).trim();
-    if (!isPercentage(strValue)) throw new Error("Invalid HSL saturation/lightness value: '%' unit is required.");
+    if (!isPercentage(strValue))
+        throw new Error("Invalid HSL saturation/lightness value: '%' unit is required.");
     const percValue = parseFloat(strValue);
-    if (isNaN(percValue)) throw new Error("Invalid HSL saturation/lightness percentage value: Not a number before '%'.");
+    if (isNaN(percValue))
+        throw new Error(
+            "Invalid HSL saturation/lightness percentage value: Not a number before '%'.",
+        );
     return clamp(percValue, 0, 100);
 }
 
 function parseAlpha(value: string | number | null | undefined) {
     if (value == null) return { value: 1, styleHint: null };
     const strValue = String(value).trim();
-    if (strValue === "") return { value: 1, styleHint: null };
+    if (strValue === '') return { value: 1, styleHint: null };
     if (isPercentage(strValue)) {
-        return { value: clamp(parseFloat(strValue), 0, 100) / 100, styleHint: ALPHA_STYLE_HINT_PERCENT };
+        return {
+            value: clamp(parseFloat(strValue), 0, 100) / 100,
+            styleHint: ALPHA_STYLE_HINT_PERCENT,
+        };
     }
     return { value: clamp(parseFloat(strValue), 0, 1), styleHint: ALPHA_STYLE_HINT_NUMBER };
 }
 
 function toHexPart(value: number) {
-    return Math.round(clamp(value, 0, 255)).toString(16).padStart(2, "0");
+    return Math.round(clamp(value, 0, 255))
+        .toString(16)
+        .padStart(2, '0');
 }
 function srgbToLinear(c: number) {
     const cn = c / 255;
@@ -108,7 +120,11 @@ function linearToSrgb(clin: number) {
     return Math.round(clamp(cs, 0, 1) * 255);
 }
 function multiplyMatrix(matrix: number[][], vector: number[]) {
-    return [matrix[0][0] * vector[0] + matrix[0][1] * vector[1] + matrix[0][2] * vector[2], matrix[1][0] * vector[0] + matrix[1][1] * vector[1] + matrix[1][2] * vector[2], matrix[2][0] * vector[0] + matrix[2][1] * vector[1] + matrix[2][2] * vector[2]];
+    return [
+        matrix[0][0] * vector[0] + matrix[0][1] * vector[1] + matrix[0][2] * vector[2],
+        matrix[1][0] * vector[0] + matrix[1][1] * vector[1] + matrix[1][2] * vector[2],
+        matrix[2][0] * vector[0] + matrix[2][1] * vector[1] + matrix[2][2] * vector[2],
+    ];
 }
 function hslToRgb(h: number, s: number, l: number) {
     h = (((h % 360) + 360) % 360) / 360;
@@ -128,19 +144,177 @@ function hslToRgb(h: number, s: number, l: number) {
     };
     const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
     const p = 2 * l - q;
-    return { r: Math.round(hueToRgb(p, q, h + 1 / 3) * 255), g: Math.round(hueToRgb(p, q, h) * 255), b: Math.round(hueToRgb(p, q, h - 1 / 3) * 255) };
+    return {
+        r: Math.round(hueToRgb(p, q, h + 1 / 3) * 255),
+        g: Math.round(hueToRgb(p, q, h) * 255),
+        b: Math.round(hueToRgb(p, q, h - 1 / 3) * 255),
+    };
 }
 
-const CSS_RGB_REGEX = /^rgba?\(\s*([+\-\d.%]+)\s+([+\-\d.%]+)\s+([+\-\d.%]+)\s*(?:[\/\s]\s*([+\-\d.%]+)\s*)?\)$/i;
-const CSS_RGB_LEGACY_REGEX = /^rgba?\(\s*([+\-\d.%]+)\s*,\s*([+\-\d.%]+)\s*,\s*([+\-\d.%]+)\s*(?:,\s*([+\-\d.%]+)\s*)?\)$/i;
-const CSS_HSL_REGEX = /^hsla?\(\s*([+\-\d.%a-z°]+)\s+([+\-\d.%]+)\s+([+\-\d.%]+)\s*(?:[\/\s]\s*([+\-\d.%]+)\s*)?\)$/i;
-const CSS_HSL_LEGACY_REGEX = /^hsla?\(\s*([+\-\d.%a-z°]+)\s*,\s*([+\-\d.%]+)\s*,\s*([+\-\d.%]+)\s*(?:,\s*([+\-\d.%]+)\s*)?\)$/i;
-const CSS_HEX_REGEX = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})?$|^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})?$/i;
+const CSS_RGB_REGEX =
+    /^rgba?\(\s*([+\-\d.%]+)\s+([+\-\d.%]+)\s+([+\-\d.%]+)\s*(?:[\/\s]\s*([+\-\d.%]+)\s*)?\)$/i;
+const CSS_RGB_LEGACY_REGEX =
+    /^rgba?\(\s*([+\-\d.%]+)\s*,\s*([+\-\d.%]+)\s*,\s*([+\-\d.%]+)\s*(?:,\s*([+\-\d.%]+)\s*)?\)$/i;
+const CSS_HSL_REGEX =
+    /^hsla?\(\s*([+\-\d.%a-z°]+)\s+([+\-\d.%]+)\s+([+\-\d.%]+)\s*(?:[\/\s]\s*([+\-\d.%]+)\s*)?\)$/i;
+const CSS_HSL_LEGACY_REGEX =
+    /^hsla?\(\s*([+\-\d.%a-z°]+)\s*,\s*([+\-\d.%]+)\s*,\s*([+\-\d.%]+)\s*(?:,\s*([+\-\d.%]+)\s*)?\)$/i;
+const CSS_HEX_REGEX =
+    /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})?$|^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})?$/i;
 const CSS_HEX_LEGACY_NUM_REGEX = /^0x(?:([a-f\d]{2}))?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
-const CSS_OKLCH_REGEX = /^oklch\(\s*([+\-\d.%]+)\s+([+\-\d.%]+)\s+([+\-\d.%a-z°]+)\s*(?:[\/\s]\s*([+\-\d.%]+)\s*)?\)$/i;
+const CSS_OKLCH_REGEX =
+    /^oklch\(\s*([+\-\d.%]+)\s+([+\-\d.%]+)\s+([+\-\d.%a-z°]+)\s*(?:[\/\s]\s*([+\-\d.%]+)\s*)?\)$/i;
 
 export const CSS_NAMED_COLORS: Record<string, string> = {
-    aliceblue: "#f0f8ff", antiquewhite: "#faebd7", aqua: "#00ffff", aquamarine: "#7fffd4", azure: "#f0ffff", beige: "#f5f5dc", bisque: "#ffe4c4", black: "#000000", blanchedalmond: "#ffebcd", blue: "#0000ff", blueviolet: "#8a2be2", brown: "#a52a2a", burlywood: "#deb887", cadetblue: "#5f9ea0", chartreuse: "#7fff00", chocolate: "#d2691e", coral: "#ff7f50", cornflowerblue: "#6495ed", cornsilk: "#fff8dc", crimson: "#dc143c", cyan: "#00ffff", darkblue: "#00008b", darkcyan: "#008b8b", darkgoldenrod: "#b8860b", darkgray: "#a9a9a9", darkgreen: "#006400", darkgrey: "#a9a9a9", darkkhaki: "#bdb76b", darkmagenta: "#8b008b", darkolivegreen: "#556b2f", darkorange: "#ff8c00", darkorchid: "#9932cc", darkred: "#8b0000", darksalmon: "#e9967a", darkseagreen: "#8fbc8f", darkslateblue: "#483d8b", darkslategray: "#2f4f4f", darkslategrey: "#2f4f4f", darkturquoise: "#00ced1", darkviolet: "#9400d3", deeppink: "#ff1493", deepskyblue: "#00bfff", dimgray: "#696969", dimgrey: "#696969", dodgerblue: "#1e90ff", firebrick: "#b22222", floralwhite: "#fffaf0", forestgreen: "#228b22", fuchsia: "#ff00ff", gainsboro: "#dcdcdc", ghostwhite: "#f8f8ff", gold: "#ffd700", goldenrod: "#daa520", gray: "#808080", green: "#008000", greenyellow: "#adff2f", grey: "#808080", honeydew: "#f0fff0", hotpink: "#ff69b4", indianred: "#cd5c5c", indigo: "#4b0082", ivory: "#fffff0", khaki: "#f0e68c", lavender: "#e6e6fa", lavenderblush: "#fff0f5", lawngreen: "#7cfc00", lemonchiffon: "#fffacd", lightblue: "#add8e6", lightcoral: "#f08080", lightcyan: "#e0ffff", lightgoldenrodyellow: "#fafad2", lightgray: "#d3d3d3", lightgreen: "#90ee90", lightgrey: "#d3d3d3", lightpink: "#ffb6c1", lightsalmon: "#ffa07a", lightseagreen: "#20b2aa", lightskyblue: "#87cefa", lightslategray: "#778899", lightslategrey: "#778899", lightsteelblue: "#b0c4de", lightyellow: "#ffffe0", lime: "#00ff00", limegreen: "#32cd32", linen: "#faf0e6", magenta: "#ff00ff", maroon: "#800000", mediumaquamarine: "#66cdaa", mediumblue: "#0000cd", mediumorchid: "#ba55d3", mediumpurple: "#9370db", mediumseagreen: "#3cb371", mediumslateblue: "#7b68ee", mediumspringgreen: "#00fa9a", mediumturquoise: "#48d1cc", mediumvioletred: "#c71585", midnightblue: "#191970", mintcream: "#f5fffa", mistyrose: "#ffe4e1", moccasin: "#ffe4b5", navajowhite: "#ffdead", navy: "#000080", oldlace: "#fdf5e6", olive: "#808000", olivedrab: "#6b8e23", orange: "#ffa500", orangered: "#ff4500", orchid: "#da70d6", palegoldenrod: "#eee8aa", palegreen: "#98fb98", paleturquoise: "#afeeee", palevioletred: "#db7093", papayawhip: "#ffefd5", peachpuff: "#ffdab9", peru: "#cd853f", pink: "#ffc0cb", plum: "#dda0dd", powderblue: "#b0e0e6", purple: "#800080", rebeccapurple: "#663399", red: "#ff0000", rosybrown: "#bc8f8f", royalblue: "#4169e1", saddlebrown: "#8b4513", salmon: "#fa8072", sandybrown: "#f4a460", seagreen: "#2e8b57", seashell: "#fff5ee", sienna: "#a0522d", silver: "#c0c0c0", skyblue: "#87ceeb", slateblue: "#6a5acd", slategray: "#708090", slategrey: "#708090", snow: "#fffafa", springgreen: "#00ff7f", steelblue: "#4682b4", tan: "#d2b48c", teal: "#008080", thistle: "#d8bfd8", tomato: "#ff6347", transparent: "#00000000", turquoise: "#40e0d0", violet: "#ee82ee", wheat: "#f5deb3", white: "#ffffff", whitesmoke: "#f5f5f5", yellow: "#ffff00", yellowgreen: "#9acd32"
+    aliceblue: '#f0f8ff',
+    antiquewhite: '#faebd7',
+    aqua: '#00ffff',
+    aquamarine: '#7fffd4',
+    azure: '#f0ffff',
+    beige: '#f5f5dc',
+    bisque: '#ffe4c4',
+    black: '#000000',
+    blanchedalmond: '#ffebcd',
+    blue: '#0000ff',
+    blueviolet: '#8a2be2',
+    brown: '#a52a2a',
+    burlywood: '#deb887',
+    cadetblue: '#5f9ea0',
+    chartreuse: '#7fff00',
+    chocolate: '#d2691e',
+    coral: '#ff7f50',
+    cornflowerblue: '#6495ed',
+    cornsilk: '#fff8dc',
+    crimson: '#dc143c',
+    cyan: '#00ffff',
+    darkblue: '#00008b',
+    darkcyan: '#008b8b',
+    darkgoldenrod: '#b8860b',
+    darkgray: '#a9a9a9',
+    darkgreen: '#006400',
+    darkgrey: '#a9a9a9',
+    darkkhaki: '#bdb76b',
+    darkmagenta: '#8b008b',
+    darkolivegreen: '#556b2f',
+    darkorange: '#ff8c00',
+    darkorchid: '#9932cc',
+    darkred: '#8b0000',
+    darksalmon: '#e9967a',
+    darkseagreen: '#8fbc8f',
+    darkslateblue: '#483d8b',
+    darkslategray: '#2f4f4f',
+    darkslategrey: '#2f4f4f',
+    darkturquoise: '#00ced1',
+    darkviolet: '#9400d3',
+    deeppink: '#ff1493',
+    deepskyblue: '#00bfff',
+    dimgray: '#696969',
+    dimgrey: '#696969',
+    dodgerblue: '#1e90ff',
+    firebrick: '#b22222',
+    floralwhite: '#fffaf0',
+    forestgreen: '#228b22',
+    fuchsia: '#ff00ff',
+    gainsboro: '#dcdcdc',
+    ghostwhite: '#f8f8ff',
+    gold: '#ffd700',
+    goldenrod: '#daa520',
+    gray: '#808080',
+    green: '#008000',
+    greenyellow: '#adff2f',
+    grey: '#808080',
+    honeydew: '#f0fff0',
+    hotpink: '#ff69b4',
+    indianred: '#cd5c5c',
+    indigo: '#4b0082',
+    ivory: '#fffff0',
+    khaki: '#f0e68c',
+    lavender: '#e6e6fa',
+    lavenderblush: '#fff0f5',
+    lawngreen: '#7cfc00',
+    lemonchiffon: '#fffacd',
+    lightblue: '#add8e6',
+    lightcoral: '#f08080',
+    lightcyan: '#e0ffff',
+    lightgoldenrodyellow: '#fafad2',
+    lightgray: '#d3d3d3',
+    lightgreen: '#90ee90',
+    lightgrey: '#d3d3d3',
+    lightpink: '#ffb6c1',
+    lightsalmon: '#ffa07a',
+    lightseagreen: '#20b2aa',
+    lightskyblue: '#87cefa',
+    lightslategray: '#778899',
+    lightslategrey: '#778899',
+    lightsteelblue: '#b0c4de',
+    lightyellow: '#ffffe0',
+    lime: '#00ff00',
+    limegreen: '#32cd32',
+    linen: '#faf0e6',
+    magenta: '#ff00ff',
+    maroon: '#800000',
+    mediumaquamarine: '#66cdaa',
+    mediumblue: '#0000cd',
+    mediumorchid: '#ba55d3',
+    mediumpurple: '#9370db',
+    mediumseagreen: '#3cb371',
+    mediumslateblue: '#7b68ee',
+    mediumspringgreen: '#00fa9a',
+    mediumturquoise: '#48d1cc',
+    mediumvioletred: '#c71585',
+    midnightblue: '#191970',
+    mintcream: '#f5fffa',
+    mistyrose: '#ffe4e1',
+    moccasin: '#ffe4b5',
+    navajowhite: '#ffdead',
+    navy: '#000080',
+    oldlace: '#fdf5e6',
+    olive: '#808000',
+    olivedrab: '#6b8e23',
+    orange: '#ffa500',
+    orangered: '#ff4500',
+    orchid: '#da70d6',
+    palegoldenrod: '#eee8aa',
+    palegreen: '#98fb98',
+    paleturquoise: '#afeeee',
+    palevioletred: '#db7093',
+    papayawhip: '#ffefd5',
+    peachpuff: '#ffdab9',
+    peru: '#cd853f',
+    pink: '#ffc0cb',
+    plum: '#dda0dd',
+    powderblue: '#b0e0e6',
+    purple: '#800080',
+    rebeccapurple: '#663399',
+    red: '#ff0000',
+    rosybrown: '#bc8f8f',
+    royalblue: '#4169e1',
+    saddlebrown: '#8b4513',
+    salmon: '#fa8072',
+    sandybrown: '#f4a460',
+    seagreen: '#2e8b57',
+    seashell: '#fff5ee',
+    sienna: '#a0522d',
+    silver: '#c0c0c0',
+    skyblue: '#87ceeb',
+    slateblue: '#6a5acd',
+    slategray: '#708090',
+    slategrey: '#708090',
+    snow: '#fffafa',
+    springgreen: '#00ff7f',
+    steelblue: '#4682b4',
+    tan: '#d2b48c',
+    teal: '#008080',
+    thistle: '#d8bfd8',
+    tomato: '#ff6347',
+    transparent: '#00000000',
+    turquoise: '#40e0d0',
+    violet: '#ee82ee',
+    wheat: '#f5deb3',
+    white: '#ffffff',
+    whitesmoke: '#f5f5f5',
+    yellow: '#ffff00',
+    yellowgreen: '#9acd32',
 };
 
 export class GoatColorInternal {
@@ -163,17 +337,17 @@ export class GoatColorInternal {
         this.error = null;
 
         if (rawInput == null) {
-            this.error = "Input color is null or undefined.";
+            this.error = 'Input color is null or undefined.';
             return;
         }
-        if (typeof rawInput !== "string") {
+        if (typeof rawInput !== 'string') {
             this.error = `Invalid input type: Expected string, got ${typeof rawInput}.`;
             return;
         }
 
         let str = rawInput.trim();
-        if (str === "") {
-            this.error = "Input color string is empty.";
+        if (str === '') {
+            this.error = 'Input color string is empty.';
             return;
         }
 
@@ -210,7 +384,8 @@ export class GoatColorInternal {
                         this.a = 1;
                     }
                 }
-                if (isNaN(this.r) || isNaN(this.g) || isNaN(this.b)) throw new Error("Invalid character in hex string.");
+                if (isNaN(this.r) || isNaN(this.g) || isNaN(this.b))
+                    throw new Error('Invalid character in hex string.');
                 this.valid = true;
                 return;
             } catch (e: any) {
@@ -236,7 +411,8 @@ export class GoatColorInternal {
                     this.b = parseInt(match[4], 16);
                     this.a = 1;
                 }
-                if (isNaN(this.r) || isNaN(this.g) || isNaN(this.b) || isNaN(this.a)) throw new Error("Invalid character in 0x hex string.");
+                if (isNaN(this.r) || isNaN(this.g) || isNaN(this.b) || isNaN(this.a))
+                    throw new Error('Invalid character in 0x hex string.');
                 this.valid = true;
                 return;
             } catch (e: any) {
@@ -252,12 +428,12 @@ export class GoatColorInternal {
             try {
                 const parseOklchLightness = (v: string) => {
                     const n = parseFloat(v);
-                    if (isNaN(n)) throw new Error("Invalid OKLCH Lightness value.");
+                    if (isNaN(n)) throw new Error('Invalid OKLCH Lightness value.');
                     return isPercentage(v) ? clamp(n, 0, 100) : clamp(n * 100, 0, 100);
                 };
                 const parseOklchChroma = (v: string) => {
                     const n = parseFloat(v);
-                    if (isNaN(n)) throw new Error("Invalid OKLCH Chroma value.");
+                    if (isNaN(n)) throw new Error('Invalid OKLCH Chroma value.');
                     if (isPercentage(v)) {
                         return clamp((parseFloat(v) / 100) * 0.4, 0, Infinity);
                     }
@@ -278,8 +454,16 @@ export class GoatColorInternal {
                 const a_oklab_comp = C_oklch_val * Math.cos(H_rad);
                 const b_oklab_comp = C_oklch_val * Math.sin(H_rad);
 
-                const [l_p, m_p, s_p] = multiplyMatrix(OKLAB_LAB_TO_LMS_P_MATRIX, [L_oklab_norm, a_oklab_comp, b_oklab_comp]);
-                const [x, y, z] = multiplyMatrix(OKLAB_LMS_CUBED_TO_XYZ_MATRIX, [Math.pow(l_p, 3), Math.pow(m_p, 3), Math.pow(s_p, 3)]);
+                const [l_p, m_p, s_p] = multiplyMatrix(OKLAB_LAB_TO_LMS_P_MATRIX, [
+                    L_oklab_norm,
+                    a_oklab_comp,
+                    b_oklab_comp,
+                ]);
+                const [x, y, z] = multiplyMatrix(OKLAB_LMS_CUBED_TO_XYZ_MATRIX, [
+                    Math.pow(l_p, 3),
+                    Math.pow(m_p, 3),
+                    Math.pow(s_p, 3),
+                ]);
                 const [r_lin, g_lin, b_lin] = multiplyMatrix(XYZ_TO_SRGB_MATRIX, [x, y, z]);
 
                 this.r = linearToSrgb(r_lin);
@@ -287,7 +471,9 @@ export class GoatColorInternal {
                 this.b = linearToSrgb(b_lin);
 
                 if (isNaN(this.r) || isNaN(this.g) || isNaN(this.b) || isNaN(this.a)) {
-                    throw new Error("OKLCH to RGB conversion resulted in non-finite component values.");
+                    throw new Error(
+                        'OKLCH to RGB conversion resulted in non-finite component values.',
+                    );
                 }
                 this.valid = true;
                 return;
@@ -302,7 +488,11 @@ export class GoatColorInternal {
         match = str.match(CSS_HSL_REGEX) || str.match(CSS_HSL_LEGACY_REGEX);
         if (match) {
             try {
-                const { r, g, b } = hslToRgb(parseHue(match[1]), parseHslPercentage(match[2]), parseHslPercentage(match[3]));
+                const { r, g, b } = hslToRgb(
+                    parseHue(match[1]),
+                    parseHslPercentage(match[2]),
+                    parseHslPercentage(match[3]),
+                );
                 this.r = r;
                 this.g = g;
                 this.b = b;
@@ -311,7 +501,9 @@ export class GoatColorInternal {
                 this._alphaInputStyleHint = alphaInfo.styleHint;
 
                 if (isNaN(this.r) || isNaN(this.g) || isNaN(this.b) || isNaN(this.a)) {
-                    throw new Error("HSL to RGB conversion resulted in non-finite component values.");
+                    throw new Error(
+                        'HSL to RGB conversion resulted in non-finite component values.',
+                    );
                 }
                 this.valid = true;
                 return;
@@ -333,7 +525,7 @@ export class GoatColorInternal {
                 this.a = alphaInfo.value;
                 this._alphaInputStyleHint = alphaInfo.styleHint;
                 if (isNaN(this.r) || isNaN(this.g) || isNaN(this.b) || isNaN(this.a)) {
-                    throw new Error("One or more RGB(A) components are not valid numbers.");
+                    throw new Error('One or more RGB(A) components are not valid numbers.');
                 }
                 this.valid = true;
                 return;
@@ -355,10 +547,15 @@ export class GoatColorInternal {
 
     setAlpha(alphaValue: number, styleHint = ALPHA_STYLE_HINT_PERCENT) {
         this.a = clamp(alphaValue, 0, 1);
-        this._alphaInputStyleHint = (styleHint === ALPHA_STYLE_HINT_NUMBER || styleHint === ALPHA_STYLE_HINT_PERCENT) ? styleHint : ALPHA_STYLE_HINT_PERCENT;
+        this._alphaInputStyleHint =
+            styleHint === ALPHA_STYLE_HINT_NUMBER || styleHint === ALPHA_STYLE_HINT_PERCENT
+                ? styleHint
+                : ALPHA_STYLE_HINT_PERCENT;
         this.valid = !(isNaN(this.r) || isNaN(this.g) || isNaN(this.b));
         if (!this.valid) {
-            this.error = this.error || "Color became invalid after setting alpha (underlying RGB might be corrupt).";
+            this.error =
+                this.error ||
+                'Color became invalid after setting alpha (underlying RGB might be corrupt).';
         }
     }
 
@@ -367,21 +564,21 @@ export class GoatColorInternal {
         const epsilon = 1e-9;
 
         if (legacy) {
-            if (Math.abs(alpha - 1) < epsilon) return "1";
+            if (Math.abs(alpha - 1) < epsilon) return '1';
 
             let legacyA = round(alpha, 2).toString();
-            if (legacyA === "0.00") return "0";
-            if (legacyA === "1.00") return "1";
-            if (legacyA.startsWith("0.")) return legacyA.substring(1);
+            if (legacyA === '0.00') return '0';
+            if (legacyA === '1.00') return '1';
+            if (legacyA.startsWith('0.')) return legacyA.substring(1);
             return legacyA;
         }
 
-        if (Math.abs(alpha - 1) < epsilon) return "1";
-        if (Math.abs(alpha - 0) < epsilon) return "0";
+        if (Math.abs(alpha - 1) < epsilon) return '1';
+        if (Math.abs(alpha - 0) < epsilon) return '0';
 
         if (this._alphaInputStyleHint === ALPHA_STYLE_HINT_NUMBER) {
             let numStr = round(alpha, 3).toString();
-            if (numStr.startsWith("0.")) {
+            if (numStr.startsWith('0.')) {
                 numStr = numStr.substring(1);
             }
             return numStr;
@@ -400,13 +597,13 @@ export class GoatColorInternal {
     }
 
     toRgbString(legacy = false) {
-        if (!this.valid) return this.error || "Invalid Color";
+        if (!this.valid) return this.error || 'Invalid Color';
         const { r, g, b } = this.toRgb();
         return legacy ? `rgb(${r}, ${g}, ${b})` : `rgb(${r} ${g} ${b})`;
     }
 
     toRgbaString(legacy = false) {
-        if (!this.valid) return this.error || "Invalid Color";
+        if (!this.valid) return this.error || 'Invalid Color';
         const { r, g, b } = this.toRgb();
         if (legacy) {
             return `rgba(${r}, ${g}, ${b}, ${this._getAlphaString(true)})`;
@@ -416,18 +613,20 @@ export class GoatColorInternal {
     }
 
     toHex() {
-        if (!this.valid) return this.error || "Invalid Color";
+        if (!this.valid) return this.error || 'Invalid Color';
         return `#${toHexPart(this.r)}${toHexPart(this.g)}${toHexPart(this.b)}`;
     }
 
     toHexa() {
-        if (!this.valid) return this.error || "Invalid Color";
-        return `#${toHexPart(this.r)}${toHexPart(this.g)}${toHexPart(this.b)}${this.a === 1 ? "" : toHexPart(this.a * 255)}`;
+        if (!this.valid) return this.error || 'Invalid Color';
+        return `#${toHexPart(this.r)}${toHexPart(this.g)}${toHexPart(this.b)}${this.a === 1 ? '' : toHexPart(this.a * 255)}`;
     }
 
     toHexShort() {
         if (!this.valid || this.a < 1) return null;
-        const rH = toHexPart(this.r), gH = toHexPart(this.g), bH = toHexPart(this.b);
+        const rH = toHexPart(this.r),
+            gH = toHexPart(this.g),
+            bH = toHexPart(this.b);
         if (rH[0] === rH[1] && gH[0] === gH[1] && bH[0] === bH[1]) {
             return `#${rH[0]}${gH[0]}${bH[0]}`;
         }
@@ -436,7 +635,10 @@ export class GoatColorInternal {
 
     toHexaShort() {
         if (!this.valid) return null;
-        const rH = toHexPart(this.r), gH = toHexPart(this.g), bH = toHexPart(this.b), aH = toHexPart(this.a * 255);
+        const rH = toHexPart(this.r),
+            gH = toHexPart(this.g),
+            bH = toHexPart(this.b),
+            aH = toHexPart(this.a * 255);
         if (rH[0] === rH[1] && gH[0] === gH[1] && bH[0] === bH[1] && aH[0] === aH[1]) {
             return this.a === 1 ? `#${rH[0]}${gH[0]}${bH[0]}` : `#${rH[0]}${gH[0]}${bH[0]}${aH[0]}`;
         }
@@ -445,9 +647,14 @@ export class GoatColorInternal {
 
     toHsl() {
         if (!this.valid) return { h: 0, s: 0, l: 0 };
-        const rN = this.r / 255, gN = this.g / 255, bN = this.b / 255;
-        const max = Math.max(rN, gN, bN), min = Math.min(rN, gN, bN);
-        let h = 0, s, l = (max + min) / 2;
+        const rN = this.r / 255,
+            gN = this.g / 255,
+            bN = this.b / 255;
+        const max = Math.max(rN, gN, bN),
+            min = Math.min(rN, gN, bN);
+        let h = 0,
+            s,
+            l = (max + min) / 2;
 
         if (max === min) {
             s = 0;
@@ -455,9 +662,15 @@ export class GoatColorInternal {
             const d = max - min;
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
             switch (max) {
-                case rN: h = (gN - bN) / d + (gN < bN ? 6 : 0); break;
-                case gN: h = (bN - rN) / d + 2; break;
-                case bN: h = (rN - gN) / d + 4; break;
+                case rN:
+                    h = (gN - bN) / d + (gN < bN ? 6 : 0);
+                    break;
+                case gN:
+                    h = (bN - rN) / d + 2;
+                    break;
+                case bN:
+                    h = (rN - gN) / d + 4;
+                    break;
             }
             h /= 6;
         }
@@ -473,16 +686,20 @@ export class GoatColorInternal {
     }
 
     toHslString(legacy = false) {
-        if (!this.valid) return this.error || "Invalid Color";
+        if (!this.valid) return this.error || 'Invalid Color';
         const { h, s, l } = this.toHsl();
-        const hS = round(h, 0), sS = round(s, 0), lS = round(l, 0);
+        const hS = round(h, 0),
+            sS = round(s, 0),
+            lS = round(l, 0);
         return legacy ? `hsl(${hS}, ${sS}%, ${lS}%)` : `hsl(${hS} ${sS}% ${lS}%)`;
     }
 
     toHslaString(legacy = false) {
-        if (!this.valid) return this.error || "Invalid Color";
+        if (!this.valid) return this.error || 'Invalid Color';
         const { h, s, l } = this.toHsl();
-        const hS = round(h, 0), sS = round(s, 0), lS = round(l, 0);
+        const hS = round(h, 0),
+            sS = round(s, 0),
+            lS = round(l, 0);
         if (legacy) {
             return `hsla(${hS}, ${sS}%, ${lS}%, ${this._getAlphaString(true)})`;
         }
@@ -492,10 +709,14 @@ export class GoatColorInternal {
 
     toOklch() {
         if (!this.valid) return { l: 0, c: 0, h: 0 };
-        const rL = srgbToLinear(this.r), gL = srgbToLinear(this.g), bL = srgbToLinear(this.b);
+        const rL = srgbToLinear(this.r),
+            gL = srgbToLinear(this.g),
+            bL = srgbToLinear(this.b);
         const [x, y, z] = multiplyMatrix(SRGB_TO_XYZ_MATRIX, [rL, gL, bL]);
         const [lC, mC, sC] = multiplyMatrix(OKLAB_XYZ_TO_LMS_MATRIX, [x, y, z]);
-        const lP = Math.cbrt(lC), mP = Math.cbrt(mC), sP = Math.cbrt(sC);
+        const lP = Math.cbrt(lC),
+            mP = Math.cbrt(mC),
+            sP = Math.cbrt(sC);
         const [L, a_ok, b_ok] = multiplyMatrix(OKLAB_LMS_P_TO_LAB_MATRIX, [lP, mP, sP]);
         const C = Math.sqrt(a_ok * a_ok + b_ok * b_ok);
         let H = (Math.atan2(b_ok, a_ok) * 180) / Math.PI;
@@ -511,55 +732,107 @@ export class GoatColorInternal {
     }
 
     toOklchString() {
-        if (!this.valid) return this.error || "Invalid Color";
+        if (!this.valid) return this.error || 'Invalid Color';
         const { l, c, h } = this.toOklch();
         return `oklch(${round(l, 0)}% ${round(c, 3)} ${round(h, 0)})`;
     }
 
     toOklchaString() {
-        if (!this.valid) return this.error || "Invalid Color";
+        if (!this.valid) return this.error || 'Invalid Color';
         const { l, c, h } = this.toOklch();
         if (this.a === 1) return `oklch(${round(l, 0)}% ${round(c, 3)} ${round(h, 0)})`;
         const aStr = this._getAlphaString();
         return `oklch(${round(l, 0)}% ${round(c, 3)} ${round(h, 0)} / ${aStr})`;
     }
 
-    toString(format = "auto") {
-        if (!this.valid) return this.input == null ? (this.error || "Invalid Color") : String(this.input);
+    toString(format = 'auto') {
+        if (!this.valid)
+            return this.input == null ? this.error || 'Invalid Color' : String(this.input);
 
-        const hexS = this.toHexShort(), hexaS = this.toHexaShort();
+        const hexS = this.toHexShort(),
+            hexaS = this.toHexaShort();
 
         switch (format.toLowerCase()) {
-            case "hex": return this.toHex();
-            case "hexa": return this.toHexa();
-            case "hexshort": return hexS || this.toHex();
-            case "hexashort": return hexaS || this.toHexa();
-            case "rgb": return this.toRgbString();
-            case "rgba": return this.toRgbaString();
-            case "rgblegacy": return this.toRgbString(true);
-            case "rgbalegacy": return this.toRgbaString(true);
-            case "hsl": return this.toHslString();
-            case "hsla": return this.toHslaString();
-            case "hsllegacy": return this.toHslString(true);
-            case "hslalegacy": return this.toHslaString(true);
-            case "oklch": return this.toOklchString();
-            case "oklcha": return this.toOklchaString();
-            case "auto":
+            case 'hex':
+                return this.toHex();
+            case 'hexa':
+                return this.toHexa();
+            case 'hexshort':
+                return hexS || this.toHex();
+            case 'hexashort':
+                return hexaS || this.toHexa();
+            case 'rgb':
+                return this.toRgbString();
+            case 'rgba':
+                return this.toRgbaString();
+            case 'rgblegacy':
+                return this.toRgbString(true);
+            case 'rgbalegacy':
+                return this.toRgbaString(true);
+            case 'hsl':
+                return this.toHslString();
+            case 'hsla':
+                return this.toHslaString();
+            case 'hsllegacy':
+                return this.toHslString(true);
+            case 'hslalegacy':
+                return this.toHslaString(true);
+            case 'oklch':
+                return this.toOklchString();
+            case 'oklcha':
+                return this.toOklchaString();
+            case 'auto':
             default:
                 if (this.a < 1) {
                     if (hexaS) return hexaS;
                     const alphaStr = this._getAlphaString();
-                    if (alphaStr.includes('%') || (this._alphaInputStyleHint === ALPHA_STYLE_HINT_NUMBER && this.a !== round(this.a, 0))) {
-                        if (this.input && typeof this.input === 'string' && this.input.toLowerCase().startsWith("oklch")) return this.toOklchaString();
-                        if (this.input && typeof this.input === 'string' && (this.input.toLowerCase().startsWith("hsl") || this.input.toLowerCase().startsWith("hsla"))) return this.toHslaString();
-                        if (this.input && typeof this.input === 'string' && (this.input.toLowerCase().startsWith("rgb") || this.input.toLowerCase().startsWith("rgba"))) return this.toRgbaString();
+                    if (
+                        alphaStr.includes('%') ||
+                        (this._alphaInputStyleHint === ALPHA_STYLE_HINT_NUMBER &&
+                            this.a !== round(this.a, 0))
+                    ) {
+                        if (
+                            this.input &&
+                            typeof this.input === 'string' &&
+                            this.input.toLowerCase().startsWith('oklch')
+                        )
+                            return this.toOklchaString();
+                        if (
+                            this.input &&
+                            typeof this.input === 'string' &&
+                            (this.input.toLowerCase().startsWith('hsl') ||
+                                this.input.toLowerCase().startsWith('hsla'))
+                        )
+                            return this.toHslaString();
+                        if (
+                            this.input &&
+                            typeof this.input === 'string' &&
+                            (this.input.toLowerCase().startsWith('rgb') ||
+                                this.input.toLowerCase().startsWith('rgba'))
+                        )
+                            return this.toRgbaString();
                     }
                     return this.toRgbaString();
                 }
                 if (hexS) return hexS;
-                if (this.input && typeof this.input === 'string' && this.input.toLowerCase().startsWith("oklch")) return this.toOklchString();
-                if (this.input && typeof this.input === 'string' && this.input.toLowerCase().startsWith("hsl")) return this.toHslString();
-                if (this.input && typeof this.input === 'string' && this.input.toLowerCase().startsWith("rgb")) return this.toRgbString();
+                if (
+                    this.input &&
+                    typeof this.input === 'string' &&
+                    this.input.toLowerCase().startsWith('oklch')
+                )
+                    return this.toOklchString();
+                if (
+                    this.input &&
+                    typeof this.input === 'string' &&
+                    this.input.toLowerCase().startsWith('hsl')
+                )
+                    return this.toHslString();
+                if (
+                    this.input &&
+                    typeof this.input === 'string' &&
+                    this.input.toLowerCase().startsWith('rgb')
+                )
+                    return this.toRgbString();
                 return this.toHex();
         }
     }
@@ -569,7 +842,11 @@ export class GoatColorInternal {
         const r_lin = srgbToLinear(this.r);
         const g_lin = srgbToLinear(this.g);
         const b_lin = srgbToLinear(this.b);
-        return SRGB_TO_XYZ_MATRIX[1][0] * r_lin + SRGB_TO_XYZ_MATRIX[1][1] * g_lin + SRGB_TO_XYZ_MATRIX[1][2] * b_lin;
+        return (
+            SRGB_TO_XYZ_MATRIX[1][0] * r_lin +
+            SRGB_TO_XYZ_MATRIX[1][1] * g_lin +
+            SRGB_TO_XYZ_MATRIX[1][2] * b_lin
+        );
     }
 
     _normalizeHue(hue: number) {
@@ -577,7 +854,13 @@ export class GoatColorInternal {
         return h < 0 ? h + 360 : h;
     }
 
-    static _fromRgba(r: number, g: number, b: number, a: number, alphaStyleHint: string | null = null) {
+    static _fromRgba(
+        r: number,
+        g: number,
+        b: number,
+        a: number,
+        alphaStyleHint: string | null = null,
+    ) {
         const i = new GoatColorInternal(null);
         i.r = Math.round(clamp(r, 0, 255));
         i.g = Math.round(clamp(g, 0, 255));
@@ -612,7 +895,9 @@ export class GoatColorInternal {
         const p: GoatColorInternal[] = [this];
 
         if (count === 2) {
-            p.push(this._cloneWithNewHsl(h, s, clamp(baseL > 50 ? baseL - 20 : baseL + 20, 0, 100)));
+            p.push(
+                this._cloneWithNewHsl(h, s, clamp(baseL > 50 ? baseL - 20 : baseL + 20, 0, 100)),
+            );
             return p.sort((c1, c2) => c1.toHsl().l - c2.toHsl().l);
         }
 
@@ -620,11 +905,19 @@ export class GoatColorInternal {
         const darkerColorsCount = Math.floor((count - 1) / 2);
 
         for (let i = 1; i <= lighterColorsCount; i++) {
-            const lightness = clamp(baseL + (100 - baseL) * (i / (lighterColorsCount + 1)) * lightenFactor, 0, 100);
+            const lightness = clamp(
+                baseL + (100 - baseL) * (i / (lighterColorsCount + 1)) * lightenFactor,
+                0,
+                100,
+            );
             p.push(this._cloneWithNewHsl(h, s, lightness));
         }
         for (let i = 1; i <= darkerColorsCount; i++) {
-            const lightness = clamp(baseL * (1 - (i / (darkerColorsCount + 1)) * darkenFactor), 0, 100);
+            const lightness = clamp(
+                baseL * (1 - (i / (darkerColorsCount + 1)) * darkenFactor),
+                0,
+                100,
+            );
             p.push(this._cloneWithNewHsl(h, s, lightness));
         }
         return p.sort((c1, c2) => c1.toHsl().l - c2.toHsl().l);
@@ -636,7 +929,7 @@ export class GoatColorInternal {
         return [
             this._cloneWithNewHsl(h - angle, s, l),
             this,
-            this._cloneWithNewHsl(h + angle, s, l)
+            this._cloneWithNewHsl(h + angle, s, l),
         ].sort((a, b) => this._normalizeHue(a.toHsl().h) - this._normalizeHue(b.toHsl().h));
     }
 
@@ -653,7 +946,7 @@ export class GoatColorInternal {
         return [
             this,
             this._cloneWithNewHsl(complementaryHue - angle, s, l),
-            this._cloneWithNewHsl(complementaryHue + angle, s, l)
+            this._cloneWithNewHsl(complementaryHue + angle, s, l),
         ].sort((a, b) => this._normalizeHue(a.toHsl().h) - this._normalizeHue(b.toHsl().h));
     }
 
@@ -663,7 +956,7 @@ export class GoatColorInternal {
         return [
             this,
             this._cloneWithNewHsl(h + 120, s, l),
-            this._cloneWithNewHsl(h + 240, s, l)
+            this._cloneWithNewHsl(h + 240, s, l),
         ].sort((a, b) => this._normalizeHue(a.toHsl().h) - this._normalizeHue(b.toHsl().h));
     }
 
@@ -674,29 +967,38 @@ export class GoatColorInternal {
             this,
             this._cloneWithNewHsl(h + offsetAngle, s, l),
             this._cloneWithNewHsl(h + 180, s, l),
-            this._cloneWithNewHsl(h + 180 + offsetAngle, s, l)
+            this._cloneWithNewHsl(h + 180 + offsetAngle, s, l),
         ].sort((a, b) => this._normalizeHue(a.toHsl().h) - this._normalizeHue(b.toHsl().h));
     }
 
-    flatten(backgroundInput: string | GoatColorInternal = "white"): GoatColorInternal {
+    flatten(backgroundInput: string | GoatColorInternal = 'white'): GoatColorInternal {
         if (!this.valid) {
             const invalidColor = new GoatColorInternal(null);
-            invalidColor.error = this.error || "Cannot flatten an invalid color.";
+            invalidColor.error = this.error || 'Cannot flatten an invalid color.';
             return invalidColor;
         }
         if (this.a === 1) {
-            return GoatColorInternal._fromRgba(this.r, this.g, this.b, 1, this._alphaInputStyleHint);
+            return GoatColorInternal._fromRgba(
+                this.r,
+                this.g,
+                this.b,
+                1,
+                this._alphaInputStyleHint,
+            );
         }
 
-        let bgInstance = backgroundInput instanceof GoatColorInternal ? backgroundInput : new GoatColorInternal(backgroundInput);
+        let bgInstance =
+            backgroundInput instanceof GoatColorInternal
+                ? backgroundInput
+                : new GoatColorInternal(backgroundInput);
         if (!bgInstance.isValid()) {
             const invalidColor = new GoatColorInternal(null);
-            invalidColor.error = "Cannot flatten against an invalid background color.";
+            invalidColor.error = 'Cannot flatten against an invalid background color.';
             return invalidColor;
         }
 
         if (bgInstance.a < 1) {
-            bgInstance = bgInstance.flatten("white");
+            bgInstance = bgInstance.flatten('white');
         }
 
         const finalR = this.r * this.a + bgInstance.r * (1 - this.a);
@@ -706,15 +1008,24 @@ export class GoatColorInternal {
         return GoatColorInternal._fromRgba(finalR, finalG, finalB, 1, this._alphaInputStyleHint);
     }
 
-    static getContrastRatio(colorInput1: string | GoatColorInternal, colorInput2: string | GoatColorInternal): number {
-        const c1Instance = colorInput1 instanceof GoatColorInternal ? colorInput1 : new GoatColorInternal(colorInput1);
-        const c2Instance = colorInput2 instanceof GoatColorInternal ? colorInput2 : new GoatColorInternal(colorInput2);
+    static getContrastRatio(
+        colorInput1: string | GoatColorInternal,
+        colorInput2: string | GoatColorInternal,
+    ): number {
+        const c1Instance =
+            colorInput1 instanceof GoatColorInternal
+                ? colorInput1
+                : new GoatColorInternal(colorInput1);
+        const c2Instance =
+            colorInput2 instanceof GoatColorInternal
+                ? colorInput2
+                : new GoatColorInternal(colorInput2);
 
         if (!c1Instance.isValid() || !c2Instance.isValid()) {
             return 1;
         }
 
-        const effectiveBackground = c2Instance.flatten("white");
+        const effectiveBackground = c2Instance.flatten('white');
         if (!effectiveBackground.isValid()) return 1;
 
         const effectiveForeground = c1Instance.flatten(effectiveBackground);
@@ -729,7 +1040,13 @@ export class GoatColorInternal {
         return round((lighter + 0.05) / (darker + 0.05), 2) as number;
     }
 
-    static getMaxSRGBChroma(lOklch: number, hOklch: number, chromaSliderMax: number, precision = 0.0005, iterations = 20): number {
+    static getMaxSRGBChroma(
+        lOklch: number,
+        hOklch: number,
+        chromaSliderMax: number,
+        precision = 0.0005,
+        iterations = 20,
+    ): number {
         lOklch = Math.max(0, Math.min(100, lOklch));
         hOklch = ((hOklch % 360) + 360) % 360;
 
@@ -754,7 +1071,9 @@ export class GoatColorInternal {
                 break;
             }
 
-            const testColor = new GoatColorInternal(`oklch(${lOklch}% ${midC.toFixed(4)} ${hOklch})`);
+            const testColor = new GoatColorInternal(
+                `oklch(${lOklch}% ${midC.toFixed(4)} ${hOklch})`,
+            );
 
             if (!testColor.isValid()) {
                 high = midC;
@@ -769,7 +1088,7 @@ export class GoatColorInternal {
             }
             const roundTrippedOklch = roundTrippedColor.toOklch();
 
-            const chromaSignificantlyReduced = roundTrippedOklch.c < (midC - precision * 5);
+            const chromaSignificantlyReduced = roundTrippedOklch.c < midC - precision * 5;
 
             const lShift = Math.abs(roundTrippedOklch.l - lOklch);
             const lShiftedTooMuch = lShift > 1.5;
@@ -787,7 +1106,7 @@ export class GoatColorInternal {
                 low = midC;
             }
 
-            if ((high - low) < precision) {
+            if (high - low < precision) {
                 break;
             }
         }

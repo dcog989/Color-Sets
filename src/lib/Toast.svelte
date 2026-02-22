@@ -2,7 +2,13 @@
     let { message, visible, success, x, y } = $props();
 </script>
 
-<div class="copy-notification {visible ? 'show' : 'hide'}" role="alert" aria-live="polite" style="top: {y}px; left: {x}px; background-color: {success ? 'var(--notification-bg-color)' : 'var(--notification-fail-bg-color)'}">
+<div
+    class="copy-notification {visible ? 'show' : 'hide'}"
+    role="alert"
+    aria-live="polite"
+    style="top: {y}px; left: {x}px; background-color: {success
+        ? 'var(--notification-bg-color)'
+        : 'var(--notification-fail-bg-color)'}">
     {message}
 </div>
 
