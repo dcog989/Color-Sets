@@ -1,0 +1,68 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
+      },
+      "style": {
+        "useImportType": "error",
+        "noNonNullAssertion": "off",
+        "useConst": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "error"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 4,
+    "lineWidth": 100,
+    "lineEnding": "lf"
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "always",
+      "bracketSameLine": true,
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/build",
+      "!**/.svelte-kit",
+      "!**/dist",
+      "!**/src/lib/utils/GoatColor.ts",
+      "!*.md",
+      "!**/*.md"
+    ]
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.svelte"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.yml", "**/*.yaml", "**/*.toml", "**/*.json"],
+      "formatter": {
+        "indentWidth": 2
+      }
+    }
+  ]
+}

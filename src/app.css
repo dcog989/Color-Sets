@@ -21,7 +21,7 @@
     --legend-text-color: #555;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
     --bg-color: #1a1a1a;
     --text-color: #ccc;
     --text-muted: #888;
@@ -41,7 +41,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
+    :root:not([data-theme="light"]) {
         --bg-color: #1a1a1a;
         --text-color: #ccc;
         --text-muted: #888;
@@ -67,7 +67,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family:
-        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 20px;
     font-size: 16px;
@@ -96,7 +96,7 @@ button.text-btn {
     color: inherit;
 }
 
-input[type='search'] {
+input[type="search"] {
     padding: 8px 12px;
     border-radius: 4px;
     border: 1px solid var(--select-border-color);
@@ -107,7 +107,7 @@ input[type='search'] {
     width: 200px;
 }
 
-input[type='search']:focus {
+input[type="search"]:focus {
     outline: none;
     border-color: var(--select-focus-border-color);
     box-shadow: 0 0 0 2px var(--select-focus-shadow-color);

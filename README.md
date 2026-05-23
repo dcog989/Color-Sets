@@ -36,6 +36,7 @@ An interactive viewer for developer and designer color palettes, including CSS N
 
 - **Framework:** Svelte 5 (using Runes for fine-grained reactivity).
 - **Build Tool:** Vite.
+- **Linting/Formatting:** Biome.
 - **Language:** TypeScript.
 - **Styling:** Native CSS Variables / Custom Properties.
 - **Color Logic:** GoatColor library (Hex, HSL, OKLCH, Luminance).
@@ -61,6 +62,7 @@ An interactive viewer for developer and designer color palettes, including CSS N
    ```
 
 4. **Preview the build:**
+
    ```bash
    npm run preview
    ```

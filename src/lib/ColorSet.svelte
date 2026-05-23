@@ -1,75 +1,69 @@
 <script lang="ts">
-    import ColorItem from './ColorItem.svelte';
-    import { processColorSet } from './data/colorSets';
+import ColorItem from './ColorItem.svelte';
+import { processColorSet } from './data/colorSets';
 
-    let { title, id, rawData, useNameAsBg, sortOrder, searchTerm, onCopy } = $props<{
-        title: string;
-        id: string;
-        rawData: Record<string, string>;
-        useNameAsBg: boolean;
-        sortOrder: string;
-        searchTerm: string;
-        onCopy: (text: string, message: string, x: number, y: number) => void;
-    }>();
+const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, onCopy } = $props<{
+    title: string;
+    id: string;
+    rawData: Record<string, string>;
+    useNameAsBg: boolean;
+    sortOrder: string;
+    searchTerm: string;
+    onCopy: (text: string, message: string, x: number, y: number) => void;
+}>();
 
-    // Process data once (props are static)
-    let processedData = $derived(processColorSet(rawData, useNameAsBg));
+// Process data once (props are static)
+const processedData = $derived(processColorSet(rawData, useNameAsBg));
 
-    // Filter & Sort Logic using derived state
-    let finalData = $derived.by(() => {
-        if (!processedData) return [];
+// Filter & Sort Logic using derived state
+const finalData = $derived.by(() => {
+    if (!processedData) return [];
 
-        let data = [...processedData];
+    let data = [...processedData];
 
-        // 1. Filter
-        if (searchTerm) {
-            const q = searchTerm.toLowerCase();
-            data = data.filter(
-                (c) =>
-                    c.name.toLowerCase().includes(q) ||
-                    c.instance.toHex().toLowerCase().includes(q),
-            );
+    // 1. Filter
+    if (searchTerm) {
+        const q = searchTerm.toLowerCase();
+        data = data.filter(
+            (c) => c.name.toLowerCase().includes(q) || c.instance.toHex().toLowerCase().includes(q),
+        );
+    }
+
+    // 2. Sort
+    data.sort((a, b) => {
+        if (sortOrder === 'luminosity') return b.luminance - a.luminance;
+        if (sortOrder === 'hue') {
+            // Handle grayscale/achromatic colors first in hue sort
+            if (a.effectiveHue === -1 && b.effectiveHue === -1) return a.lightness - b.lightness;
+            if (a.effectiveHue === -1) return 1;
+            if (b.effectiveHue === -1) return -1;
+
+            if (a.hue !== b.hue) return a.hue - b.hue;
+            if (a.lightness !== b.lightness) return a.lightness - b.lightness;
+            return a.saturation - b.saturation;
         }
-
-        // 2. Sort
-        data.sort((a, b) => {
-            if (sortOrder === 'luminosity') return b.luminance - a.luminance;
-            if (sortOrder === 'hue') {
-                // Handle grayscale/achromatic colors first in hue sort
-                if (a.effectiveHue === -1 && b.effectiveHue === -1)
-                    return a.lightness - b.lightness;
-                if (a.effectiveHue === -1) return 1;
-                if (b.effectiveHue === -1) return -1;
-
-                if (a.hue !== b.hue) return a.hue - b.hue;
-                if (a.lightness !== b.lightness) return a.lightness - b.lightness;
-                return a.saturation - b.saturation;
-            }
-            return a.name.localeCompare(b.name, undefined, { numeric: true });
-        });
-        return data;
+        return a.name.localeCompare(b.name, undefined, { numeric: true });
     });
+    return data;
+});
 
-    function copySetNames(e: MouseEvent) {
-        const text = finalData.map((c) => c.name).join('\n');
-        onCopy(text, `Copied ${finalData.length} names!`, e.clientX, e.clientY);
-    }
+function copySetNames(e: MouseEvent) {
+    const text = finalData.map((c) => c.name).join('\n');
+    onCopy(text, `Copied ${finalData.length} names!`, e.clientX, e.clientY);
+}
 
-    function copySetCSS(e: MouseEvent) {
-        const themeName = title
-            .toLowerCase()
-            .replace(/[\s/()]+/g, '-')
-            .replace(/-$/, '')
-            .replace(/--/g, '-');
-        const properties = finalData
-            .map(
-                (c) =>
-                    `    --${c.name.toLowerCase().replace(/[\s/]+/g, '-')}: ${c.instance.toHex()};`,
-            )
-            .join('\n');
-        const text = `[data-theme="${themeName}"] {\n${properties}\n}`;
-        onCopy(text, 'Copied as CSS theme block!', e.clientX, e.clientY);
-    }
+function copySetCSS(e: MouseEvent) {
+    const themeName = title
+        .toLowerCase()
+        .replace(/[\s/()]+/g, '-')
+        .replace(/-$/, '')
+        .replace(/--/g, '-');
+    const properties = finalData
+        .map((c) => `    --${c.name.toLowerCase().replace(/[\s/]+/g, '-')}: ${c.instance.toHex()};`)
+        .join('\n');
+    const text = `[data-theme="${themeName}"] {\n${properties}\n}`;
+    onCopy(text, 'Copied as CSS theme block!', e.clientX, e.clientY);
+}
 </script>
 
 {#if finalData.length > 0}

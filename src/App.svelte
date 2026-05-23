@@ -1,67 +1,67 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { version } from '../package.json';
-    import ColorSet from './lib/ColorSet.svelte';
-    import Toast from './lib/Toast.svelte';
-    import { ALL_SETS } from './lib/data/colorSets';
+import { onMount } from 'svelte';
+import { version } from '../package.json';
+import ColorSet from './lib/ColorSet.svelte';
+import { ALL_SETS } from './lib/data/colorSets';
+import Toast from './lib/Toast.svelte';
 
-    let sortOrder = $state('name');
-    let theme = $state('system');
-    let searchTerm = $state('');
+let sortOrder = $state('name');
+let theme = $state('system');
+let searchTerm = $state('');
 
-    let toastMessage = $state('');
-    let toastVisible = $state(false);
-    let toastSuccess = $state(true);
-    let toastX = $state(0);
-    let toastY = $state(0);
-    let toastTimeout: ReturnType<typeof setTimeout>;
+let toastMessage = $state('');
+let toastVisible = $state(false);
+let toastSuccess = $state(true);
+let toastX = $state(0);
+let toastY = $state(0);
+let toastTimeout: ReturnType<typeof setTimeout>;
 
-    function updateTheme(newTheme: string) {
-        theme = newTheme;
-        localStorage.setItem('theme', newTheme);
+function updateTheme(newTheme: string) {
+    theme = newTheme;
+    localStorage.setItem('theme', newTheme);
 
-        if (newTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
-        else if (newTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-        else document.documentElement.removeAttribute('data-theme');
-    }
+    if (newTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    else if (newTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+}
 
-    onMount(() => {
-        const savedTheme = localStorage.getItem('theme') || 'system';
-        updateTheme(savedTheme);
+onMount(() => {
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    updateTheme(savedTheme);
 
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-            if (theme === 'system') updateTheme('system');
-        });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (theme === 'system') updateTheme('system');
     });
+});
 
-    function handleCopy(text: string, message: string, x: number, y: number) {
-        navigator.clipboard
-            .writeText(text)
-            .then(() => {
-                toastMessage = message;
-                toastSuccess = true;
-                showToast(x, y);
-            })
-            .catch((err) => {
-                console.error(err);
-                toastMessage = 'Copy failed!';
-                toastSuccess = false;
-                showToast(x, y);
-            });
-    }
+function handleCopy(text: string, message: string, x: number, y: number) {
+    navigator.clipboard
+        .writeText(text)
+        .then(() => {
+            toastMessage = message;
+            toastSuccess = true;
+            showToast(x, y);
+        })
+        .catch((err) => {
+            console.error(err);
+            toastMessage = 'Copy failed!';
+            toastSuccess = false;
+            showToast(x, y);
+        });
+}
 
-    function showToast(x: number, y: number) {
-        toastX = x;
-        toastY = y;
-        toastVisible = true;
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(
-            () => {
-                toastVisible = false;
-            },
-            toastSuccess ? 1500 : 2000,
-        );
-    }
+function showToast(x: number, y: number) {
+    toastX = x;
+    toastY = y;
+    toastVisible = true;
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(
+        () => {
+            toastVisible = false;
+        },
+        toastSuccess ? 1500 : 2000,
+    );
+}
 </script>
 
 <header>

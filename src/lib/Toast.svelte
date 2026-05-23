@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { message, visible, success, x, y } = $props();
+const { message, visible, success, x, y } = $props();
 </script>
 
 <div

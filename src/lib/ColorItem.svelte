@@ -1,28 +1,28 @@
 <script lang="ts">
-    import type { ProcessedColor } from './data/colorSets';
+import type { ProcessedColor } from './data/colorSets';
 
-    let { color, useNameForBg, onCopy } = $props<{
-        color: ProcessedColor;
-        useNameForBg: boolean;
-        onCopy: (text: string, message: string, x: number, y: number) => void;
-    }>();
+const { color, useNameForBg, onCopy } = $props<{
+    color: ProcessedColor;
+    useNameForBg: boolean;
+    onCopy: (text: string, message: string, x: number, y: number) => void;
+}>();
 
-    // Threshold of 0.179 is the standard W3C point where
-    // black vs white text yields equal contrast ratios.
-    // Above this, black text is better. Below, white text is better.
-    function isLight(c: ProcessedColor) {
-        return c.luminance > 0.179;
-    }
+// Threshold of 0.179 is the standard W3C point where
+// black vs white text yields equal contrast ratios.
+// Above this, black text is better. Below, white text is better.
+function isLight(c: ProcessedColor) {
+    return c.luminance > 0.179;
+}
 
-    function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
-        e.stopPropagation();
-        let message = type === 'name' ? `Copied "${text}"!` : `Copied ${text}!`;
-        onCopy(text, message, e.clientX, e.clientY);
-    }
+function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
+    e.stopPropagation();
+    const message = type === 'name' ? `Copied "${text}"!` : `Copied ${text}!`;
+    onCopy(text, message, e.clientX, e.clientY);
+}
 
-    function handleItemClick(e: MouseEvent) {
-        handleCopy('hex', color.instance.toHex(), e);
-    }
+function handleItemClick(e: MouseEvent) {
+    handleCopy('hex', color.instance.toHex(), e);
+}
 </script>
 
 <li

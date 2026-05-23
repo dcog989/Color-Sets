@@ -196,7 +196,7 @@ export function processColorSet(
         if (instance.isValid()) {
             hsl = instance.toHsl();
             luminance = instance.getRelativeLuminance();
-            if (hsl.s > 0) effectiveSortHue = isNaN(hsl.h) ? 0 : hsl.h;
+            if (hsl.s > 0) effectiveSortHue = Number.isNaN(hsl.h) ? 0 : hsl.h;
         }
 
         return {

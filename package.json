@@ -1,30 +1,25 @@
 {
   "name": "colorsets",
   "private": true,
-  "version": "2.0.8",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "clean": "rm -rf build dist .context .svelte-kit node_modules bun.lock",
     "dev": "vite",
     "build": "vite build",
-    "format": "prettier . --write",
-    "lint": "eslint . --max-warnings=0",
+    "format": "biome check --write",
+    "lint": "biome check",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json && biome check"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@biomejs/biome": "^2.4.15",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@tsconfig/svelte": "^5.0.8",
-    "@types/node": "^25.3.0",
-    "eslint": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-svelte": "^3.15.0",
-    "prettier": "^3.8.1",
-    "prettier-plugin-svelte": "^3.5.0",
-    "svelte": "^5.53.2",
-    "svelte-check": "^4.4.3",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.0",
-    "vite": "^7.3.1"
+    "@types/node": "^25.9.1",
+    "svelte": "^5.55.9",
+    "svelte-check": "^4.4.8",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14"
   }
 }
