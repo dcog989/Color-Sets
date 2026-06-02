@@ -27,7 +27,7 @@ function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
     <div
         class="item-bg"
         role="presentation"
-        onclick={(e) => { if (e.target === e.currentTarget) handleCopy('hex', color.instance.toHex(), e); }}>
+        onclick={(e) => handleCopy('hex', color.instance.toHex(), e)}>
     </div>
     <div class="color-info">
         <button

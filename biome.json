@@ -36,15 +36,7 @@
     }
   },
   "files": {
-    "includes": [
-      "**",
-      "!**/build",
-      "!**/.svelte-kit",
-      "!**/dist",
-      "!**/src/lib/utils/GoatColor.ts",
-      "!*.md",
-      "!**/*.md"
-    ]
+    "includes": ["**", "!**/build", "!**/.svelte-kit", "!**/dist", "!*.md", "!**/*.md"]
   },
   "overrides": [
     {

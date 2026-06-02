@@ -1,12 +1,11 @@
 <script lang="ts">
-import { onDestroy, onMount } from 'svelte';
 import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
 import { ALL_SETS } from './lib/data/colorSets';
 import Toast from './lib/Toast.svelte';
 
 let sortOrder = $state('name');
-let theme = $state('system');
+let theme = $state(localStorage.getItem('theme') || 'system');
 let searchTerm = $state('');
 
 let toastMessage = $state('');
@@ -16,16 +15,16 @@ let toastX = $state(0);
 let toastY = $state(0);
 let toastTimeout: ReturnType<typeof setTimeout>;
 
-function updateTheme(newTheme: string) {
-    theme = newTheme;
-    localStorage.setItem('theme', newTheme);
+$effect(() => {
+    const currentTheme = theme;
+    localStorage.setItem('theme', theme);
 
-    if (newTheme === 'light') {
+    if (currentTheme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
         document
             .querySelector('meta[name="theme-color"][media*="light"]')
             ?.setAttribute('content', '#ffffff');
-    } else if (newTheme === 'dark') {
+    } else if (currentTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         document
             .querySelector('meta[name="theme-color"][media*="dark"]')
@@ -33,25 +32,7 @@ function updateTheme(newTheme: string) {
     } else {
         document.documentElement.removeAttribute('data-theme');
     }
-}
-
-let mql: MediaQueryList;
-
-onMount(() => {
-    const savedTheme = localStorage.getItem('theme') || 'system';
-    updateTheme(savedTheme);
-
-    mql = window.matchMedia('(prefers-color-scheme: dark)');
-    mql.addEventListener('change', handleSystemThemeChange);
 });
-
-onDestroy(() => {
-    mql?.removeEventListener('change', handleSystemThemeChange);
-});
-
-function handleSystemThemeChange() {
-    if (theme === 'system') updateTheme('system');
-}
 
 function handleCopy(text: string, message: string, x: number, y: number) {
     if (!navigator.clipboard?.writeText) {
@@ -108,8 +89,7 @@ function showToast(x: number, y: number) {
         <label for="themeSelector">Theme:</label>
         <select
             id="themeSelector"
-            bind:value={theme}
-            onchange={() => updateTheme(theme)}>
+            bind:value={theme}>
             <option value="system">System</option>
             <option value="light">Light</option>
             <option value="dark">Dark</option>

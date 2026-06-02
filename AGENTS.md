@@ -8,7 +8,7 @@ Linux CachyOS, Limine boot loader, KDE Plasma 6, Wayland, Btrfs. Firefox, Kate t
 
 ## Tech Stack
 
-- Svelte 5 (Runes), Vite, TypeScript
+- Svelte 5 (Runes), Vite, TypeScript, colordx
 
 ## Key Features
 
@@ -17,7 +17,7 @@ Linux CachyOS, Limine boot loader, KDE Plasma 6, Wayland, Btrfs. Firefox, Kate t
 - Filter colors by name/search term
 - Sort colors by name, hue, or luminosity
 - Theme switching: System/Light/Dark with persistence
-- Color analysis using GoatColor library (hue, saturation, lightness, luminance)
+- Color analysis using colordx library (hue, saturation, lightness, luminance)
 
 ## Project Structure
 
@@ -26,7 +26,6 @@ Linux CachyOS, Limine boot loader, KDE Plasma 6, Wayland, Btrfs. Firefox, Kate t
 - `src/lib/ColorItem.svelte` - Individual color swatch component
 - `src/lib/Toast.svelte` - Copy confirmation toast notification
 - `src/lib/data/colorSets.ts` - All color set definitions and processing
-- `src/lib/utils/GoatColor.ts` - Color manipulation utility
 
 ## Development Commands
 
@@ -43,7 +42,7 @@ Linux CachyOS, Limine boot loader, KDE Plasma 6, Wayland, Btrfs. Firefox, Kate t
 
 - Svelte 5 runes ($state, $derived) for reactivity
 - CSS custom properties for theming (light/dark modes)
-- GoatColor library for color manipulation and conversions
+- colordx library for color manipulation and conversions
 
 ## Coding Principles
 
