@@ -1,4 +1,5 @@
 <script lang="ts">
+import { colordx } from '@colordx/core';
 import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
 import { loadSetData, SET_MANIFEST } from './lib/data/colorSets';
@@ -18,10 +19,31 @@ const currentEntry = $derived(SET_MANIFEST.find((s) => s.id === selectedSet) ?? 
 
 const title = 'Color Sets';
 
+const themeBg = $derived.by(() => {
+    if (theme === 'light') return '#f0f0f0';
+    if (theme === 'dark') return '#1a1a1a';
+    if (
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+        return '#1a1a1a';
+    }
+    return '#f0f0f0';
+});
+
 const titleColors = $derived.by(() => {
     if (!currentData) return [];
     const pool = Object.values(currentData);
-    return [...title].map(() => pool[Math.floor(Math.random() * pool.length)]);
+    const maxAttempts = 20;
+    return [...title].map(() => {
+        for (let i = 0; i < maxAttempts; i++) {
+            const pick = pool[Math.floor(Math.random() * pool.length)];
+            if (colordx(pick).isReadableApca(themeBg, { size: 'large' })) {
+                return pick;
+            }
+        }
+        return pool[Math.floor(Math.random() * pool.length)];
+    });
 });
 
 $effect(() => {
