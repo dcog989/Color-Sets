@@ -294,19 +294,7 @@ function showToast(x: number, y: number) {
     }
 
     .controls-container select {
-        padding: 8px 12px;
-        border-radius: 4px;
-        border: 1px solid var(--select-border-color);
-        background-color: var(--select-bg-color);
-        color: var(--select-text-color);
-        font-size: 0.9em;
         cursor: pointer;
-    }
-
-    .controls-container select:focus {
-        outline: none;
-        border-color: var(--select-focus-border-color);
-        box-shadow: 0 0 0 2px var(--select-focus-shadow-color);
     }
 
     .theme-toggle {

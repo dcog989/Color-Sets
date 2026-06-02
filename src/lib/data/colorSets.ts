@@ -22,7 +22,6 @@ type SetModule = {
 export type SetManifestEntry = {
     id: string;
     title: string;
-    file: string;
     useNameAsBg: boolean;
 };
 
@@ -42,13 +41,12 @@ const setModules = import.meta.glob<SetModule>('./sets/*.json', {
 });
 
 export const SET_MANIFEST: SetManifestEntry[] = Object.entries(setModules)
-    .map(([path, mod]) => ({
+    .map(([, mod]) => ({
         id: mod.id,
         title: mod.title,
-        file: path.replace('./sets/', ''),
         useNameAsBg: mod.useNameAsBg ?? false,
     }))
-    .sort((a, b) => a.file.localeCompare(b.file));
+    .sort((a, b) => a.title.localeCompare(b.title));
 
 const setDataMap: Record<string, SetModule> = {};
 for (const mod of Object.values(setModules)) {

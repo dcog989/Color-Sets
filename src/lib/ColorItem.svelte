@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { Colordx } from '@colordx/core';
 import type { ProcessedColor } from './data/colorSets';
+import { formatColor } from './formatColor';
 
 const { color, useNameForBg, colorFormat, onCopy } = $props<{
     color: ProcessedColor;
@@ -8,19 +8,6 @@ const { color, useNameForBg, colorFormat, onCopy } = $props<{
     colorFormat: string;
     onCopy: (text: string, message: string, x: number, y: number) => void;
 }>();
-
-function formatColor(instance: Colordx, format: string): string {
-    switch (format) {
-        case 'rgb':
-            return instance.toRgbString();
-        case 'hsl':
-            return instance.toHslString();
-        case 'oklch':
-            return instance.toOklchString();
-        default:
-            return instance.toHex();
-    }
-}
 
 const formatted = $derived(formatColor(color.instance, colorFormat));
 

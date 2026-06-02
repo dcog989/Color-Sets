@@ -1,20 +1,7 @@
 <script lang="ts">
-import type { Colordx } from '@colordx/core';
 import ColorItem from './ColorItem.svelte';
 import { processColorSet } from './data/colorSets';
-
-function formatColor(instance: Colordx, format: string): string {
-    switch (format) {
-        case 'rgb':
-            return instance.toRgbString();
-        case 'hsl':
-            return instance.toHslString();
-        case 'oklch':
-            return instance.toOklchString();
-        default:
-            return instance.toHex();
-    }
-}
+import { formatColor } from './formatColor';
 
 const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, colorFormat, onCopy } = $props<{
     title: string;
@@ -70,7 +57,11 @@ function copySetNames(e: MouseEvent) {
 }
 
 function toVarName(name: string) {
-    return name.toLowerCase().replace(/[\s/()]+/g, '-');
+    return name
+        .toLowerCase()
+        .replace(/[\s/()]+/g, '-')
+        .replace(/-$/, '')
+        .replace(/--/g, '-');
 }
 
 let exportSelect = $state<HTMLSelectElement | undefined>();
@@ -88,11 +79,7 @@ function handleExport(e: Event) {
 
     switch (format) {
         case 'css': {
-            const themeName = title
-                .toLowerCase()
-                .replace(/[\s/()]+/g, '-')
-                .replace(/-$/, '')
-                .replace(/--/g, '-');
+            const themeName = toVarName(title);
             const properties = colors
                 .map((c) => `    --${toVarName(c.name)}: ${formatColor(c.instance, colorFormat)};`)
                 .join('\n');
@@ -186,8 +173,6 @@ function handleExport(e: Event) {
             </legend>
 
             <ul class="color-list" {id}>
-                <!-- Manual lazy loading removed to fix Cumulative Layout Shift (CLS) -->
-                <!-- Browser rendering for this amount of data is performant enough -->
                 {#each finalData as color (color.name)}
                     <ColorItem {color} useNameForBg={useNameAsBg} {colorFormat} {onCopy} />
                 {/each}

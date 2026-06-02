@@ -93,13 +93,24 @@ button.text-btn {
     color: inherit;
 }
 
-input[type="search"] {
+input[type="search"],
+.controls-container select {
     padding: 8px 12px;
     border-radius: 4px;
     border: 1px solid var(--select-border-color);
     background-color: var(--select-bg-color);
     color: var(--select-text-color);
     font-size: 0.9em;
+}
+
+input[type="search"]:focus,
+.controls-container select:focus {
+    outline: none;
+    border-color: var(--select-focus-border-color);
+    box-shadow: 0 0 0 2px var(--select-focus-shadow-color);
+}
+
+input[type="search"] {
     margin: 0 10px;
     width: min(200px, 100%);
     box-sizing: border-box;
@@ -110,10 +121,4 @@ input[type="search"] {
         width: 100%;
         margin: 0;
     }
-}
-
-input[type="search"]:focus {
-    outline: none;
-    border-color: var(--select-focus-border-color);
-    box-shadow: 0 0 0 2px var(--select-focus-shadow-color);
 }
