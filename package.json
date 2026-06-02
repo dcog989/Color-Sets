@@ -4,22 +4,23 @@
   "version": "2.1.0",
   "type": "module",
   "scripts": {
+    "build": "vite build",
+    "check": "svelte-check --tsconfig ./tsconfig.json && biome check",
     "clean": "rm -rf build dist .context .svelte-kit node_modules bun.lock",
     "dev": "vite",
-    "build": "vite build",
     "format": "biome check --write",
     "lint": "biome check",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json && biome check"
+    "update": "bun update --latest"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.15",
+    "@biomejs/biome": "^2.4.16",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@tsconfig/svelte": "^5.0.8",
     "@types/node": "^25.9.1",
-    "svelte": "^5.55.9",
-    "svelte-check": "^4.4.8",
+    "svelte": "^5.56.1",
+    "svelte-check": "^4.5.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.14"
+    "vite": "^8.0.16"
   }
 }
