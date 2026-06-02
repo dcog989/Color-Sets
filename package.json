@@ -22,5 +22,8 @@
     "svelte-check": "^4.5.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.16"
+  },
+  "dependencies": {
+    "@colordx/core": "^5.4.3"
   }
 }
