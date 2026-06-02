@@ -133,6 +133,8 @@ function showToast(x: number, y: number) {
     <span>v{version}</span>
     <a href="https://github.com/dcog989/Color-Sets" target="_blank" rel="noopener noreferrer"
         >GitHub</a>
+    <a href="https://dcog989.github.io/Goat-Color-Picker-Palette/" target="_blank" rel="noopener noreferrer"
+        >Color Picker</a>
 </footer>
 
 <Toast message={toastMessage} visible={toastVisible} success={toastSuccess} x={toastX} y={toastY} />
