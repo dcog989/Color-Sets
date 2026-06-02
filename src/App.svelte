@@ -1,4 +1,5 @@
 <script lang="ts">
+import { colordx } from '@colordx/core';
 import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
 import { ALL_SETS } from './lib/data/colorSets';
@@ -12,6 +13,30 @@ let cbFilter = $state('none');
 let searchTerm = $state('');
 
 const currentSet = $derived(ALL_SETS.find((s) => s.id === selectedSet) ?? null);
+
+let systemDark = $state(false);
+
+$effect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    systemDark = mq.matches;
+    const handler = (e: MediaQueryListEvent) => (systemDark = e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+});
+
+const bgColor = $derived(
+    theme === 'dark' || (theme === 'system' && systemDark) ? '#1a1a1a' : '#f0f0f0',
+);
+
+const title = 'Color Sets';
+
+const titleColors = $derived.by(() => {
+    if (!currentSet) return [];
+    const colors = Object.values(currentSet.data).filter((c: string) => colordx(c).isValid());
+    const valid = colors.filter((c: string) => Math.abs(colordx(c).apcaContrast(bgColor)) >= 45);
+    const pool = valid.length > 0 ? valid : colors;
+    return [...title].map(() => pool[Math.floor(Math.random() * pool.length)]);
+});
 
 let toastMessage = $state('');
 let toastVisible = $state(false);
@@ -79,8 +104,12 @@ function showToast(x: number, y: number) {
 }
 </script>
 
+<h1>
+    {#each titleColors as color, i}
+        <span style="color: {color}">{title[i]}</span>
+    {/each}
+</h1>
 <header>
-    <h1>Color Sets</h1>
     <div class="controls-container">
         <input
             id="filterColors"
@@ -111,7 +140,7 @@ function showToast(x: number, y: number) {
             <option value="oklch">OKLCH</option>
         </select>
 
-        <label for="cbFilter">CB:</label>
+        <label for="cbFilter">Color Blindness:</label>
         <select id="cbFilter" bind:value={cbFilter}>
             <option value="none">None</option>
             <option value="protanopia">Protanopia</option>
@@ -261,12 +290,13 @@ function showToast(x: number, y: number) {
         transition: background-color 0.3s;
     }
 
-    header h1 {
-        color: var(--header-color);
+    h1 {
         font-family: 'Source Code Pro', Consolas, 'Courier New', Courier, monospace;
         letter-spacing: 4px;
-        margin: 0;
-        font-size: 1.8em;
+        margin: 20px auto 6px;
+        max-width: 1280px;
+        padding: 0 20px;
+        font-size: 2.4em;
     }
 
     .controls-container {
