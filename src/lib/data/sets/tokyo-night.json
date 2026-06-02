@@ -1,15 +1,20 @@
 {
-  "Background": "#1a1b26",
-  "Surface": "#16161e",
-  "Foreground": "#a9b1d6",
-  "Muted": "#787c99",
-  "Comment": "#565f89",
-  "Cyan": "#7dcfff",
-  "Blue": "#7aa2f7",
-  "Purple": "#bb9af7",
-  "Pink": "#f7768e",
-  "Orange": "#ff9e64",
-  "Yellow": "#e0af68",
-  "Green": "#9ece6a",
-  "Teal": "#73daca"
+  "id": "tokyoNightList",
+  "title": "Tokyo Night",
+  "useNameAsBg": false,
+  "colors": {
+    "Background": "#1a1b26",
+    "Surface": "#16161e",
+    "Foreground": "#a9b1d6",
+    "Muted": "#787c99",
+    "Comment": "#565f89",
+    "Cyan": "#7dcfff",
+    "Blue": "#7aa2f7",
+    "Purple": "#bb9af7",
+    "Pink": "#f7768e",
+    "Orange": "#ff9e64",
+    "Yellow": "#e0af68",
+    "Green": "#9ece6a",
+    "Teal": "#73daca"
+  }
 }

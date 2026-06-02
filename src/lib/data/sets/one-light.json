@@ -1,12 +1,17 @@
 {
-  "Background": "#fafafa",
-  "Foreground": "#383a42",
-  "Comment": "#a0a1a7",
-  "Red": "#e45649",
-  "Orange": "#c18401",
-  "Yellow": "#986801",
-  "Green": "#50a14f",
-  "Cyan": "#0184bc",
-  "Blue": "#4078f2",
-  "Purple": "#a626a4"
+  "id": "oneLightList",
+  "title": "One Light",
+  "useNameAsBg": false,
+  "colors": {
+    "Background": "#fafafa",
+    "Foreground": "#383a42",
+    "Comment": "#a0a1a7",
+    "Red": "#e45649",
+    "Orange": "#c18401",
+    "Yellow": "#986801",
+    "Green": "#50a14f",
+    "Cyan": "#0184bc",
+    "Blue": "#4078f2",
+    "Purple": "#a626a4"
+  }
 }
