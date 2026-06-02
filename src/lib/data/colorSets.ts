@@ -1,10 +1,5 @@
 import GoatColor, { CSS_NAMED_COLORS } from '../utils/GoatColor';
 
-export type ColorSetEntry = {
-    name: string;
-    value: string;
-};
-
 export type ProcessedColor = {
     name: string;
     instance: ReturnType<typeof GoatColor>;
@@ -14,7 +9,7 @@ export type ProcessedColor = {
     luminance: number;
 };
 
-export const powershellColors = {
+const powershellColors = {
     Black: '#000000',
     DarkBlue: '#000080',
     DarkGreen: '#008000',
@@ -33,7 +28,7 @@ export const powershellColors = {
     White: '#ffffff',
 };
 
-export const tailwindColors = {
+const tailwindColors = {
     slate: '#64748b',
     gray: '#6b7280',
     zinc: '#71717a',
@@ -58,7 +53,7 @@ export const tailwindColors = {
     rose: '#f43f5e',
 };
 
-export const tableau20Colors = {
+const tableau20Colors = {
     Blue: '#1f77b4',
     Orange: '#ff7f0e',
     Green: '#2ca02c',
@@ -81,7 +76,7 @@ export const tableau20Colors = {
     'Light Cyan': '#9edae5',
 };
 
-export const resistorColors = {
+const resistorColors = {
     Black: '#000000',
     Brown: '#a52a2a',
     Red: '#ff0000',
@@ -96,7 +91,7 @@ export const resistorColors = {
     Silver: '#c0c0c0',
 };
 
-export const materialColors = {
+const materialColors = {
     Red: '#f44336',
     Pink: '#e91e63',
     Purple: '#9c27b0',
@@ -118,7 +113,7 @@ export const materialColors = {
     'Blue Grey': '#607d8b',
 };
 
-export const solarizedColors = {
+const solarizedColors = {
     base03: '#002b36',
     base02: '#073642',
     base01: '#586e75',
@@ -180,7 +175,7 @@ function generateXtermColors(): Record<string, string> {
     return { ...first16, ...colors };
 }
 
-export const xtermColors = generateXtermColors();
+const xtermColors = generateXtermColors();
 
 export function processColorSet(
     colorObject: Record<string, string>,
@@ -188,17 +183,12 @@ export function processColorSet(
 ): ProcessedColor[] {
     return Object.entries(colorObject).flatMap(([name, value]) => {
         const instance = GoatColor(nameIsColor ? name : value);
-        let hsl = { h: 0, s: 0, l: 0 };
-        let luminance = 0;
-        let effectiveSortHue = -1;
-
-        if (instance.isValid()) {
-            hsl = instance.toHsl();
-            luminance = instance.getRelativeLuminance();
-            if (hsl.s > 0) effectiveSortHue = Number.isNaN(hsl.h) ? 0 : hsl.h;
-        }
-
         if (!instance.isValid()) return [];
+
+        const hsl = instance.toHsl();
+        const luminance = instance.getRelativeLuminance();
+        let effectiveSortHue = -1;
+        if (hsl.s > 0) effectiveSortHue = Number.isNaN(hsl.h) ? 0 : hsl.h;
 
         return {
             name,
@@ -218,14 +208,14 @@ export const ALL_SETS = [
         title: 'Material Design (500)',
         data: materialColors,
         useNameAsBg: false,
-    }, // NEW
+    },
     {
         id: 'tailwindColorList',
         title: 'Tailwind CSS Default (500)',
         data: tailwindColors,
         useNameAsBg: false,
     },
-    { id: 'solarizedList', title: 'Solarized', data: solarizedColors, useNameAsBg: false }, // NEW
+    { id: 'solarizedList', title: 'Solarized', data: solarizedColors, useNameAsBg: false },
     { id: 'tableauColorList', title: 'Tableau 20', data: tableau20Colors, useNameAsBg: false },
     {
         id: 'powershellColorList',
