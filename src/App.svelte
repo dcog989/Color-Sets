@@ -1,5 +1,4 @@
 <script lang="ts">
-import { colordx } from '@colordx/core';
 import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
 import { loadSetData, SET_MANIFEST } from './lib/data/colorSets';
@@ -17,33 +16,16 @@ let loading = $state(true);
 
 const currentEntry = $derived(SET_MANIFEST.find((s) => s.id === selectedSet) ?? null);
 
-const title = 'Color Sets';
-
-const themeBg = $derived.by(() => {
-    if (theme === 'light') return '#f0f0f0';
-    if (theme === 'dark') return '#1a1a1a';
+const titleColor = $derived.by(() => {
+    if (theme === 'light') return '#555';
+    if (theme === 'dark') return '#aaa';
     if (
         typeof window !== 'undefined' &&
         window.matchMedia('(prefers-color-scheme: dark)').matches
     ) {
-        return '#1a1a1a';
+        return '#aaa';
     }
-    return '#f0f0f0';
-});
-
-const titleColors = $derived.by(() => {
-    if (!currentData) return [];
-    const pool = Object.values(currentData);
-    const maxAttempts = 20;
-    return [...title].map(() => {
-        for (let i = 0; i < maxAttempts; i++) {
-            const pick = pool[Math.floor(Math.random() * pool.length)];
-            if (colordx(pick).isReadableApca(themeBg, { size: 'large' })) {
-                return pick;
-            }
-        }
-        return pool[Math.floor(Math.random() * pool.length)];
-    });
+    return '#555';
 });
 
 $effect(() => {
@@ -120,11 +102,7 @@ function showToast(x: number, y: number) {
 }
 </script>
 
-<h1>
-    {#each titleColors as color, i}
-        <span style="color: {color}">{title[i]}</span>
-    {/each}
-</h1>
+<h1 style="color: {titleColor}">Color Sets</h1>
 <header>
     <div class="controls-container">
         <input
