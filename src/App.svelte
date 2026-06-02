@@ -4,10 +4,13 @@ import ColorSet from './lib/ColorSet.svelte';
 import { ALL_SETS } from './lib/data/colorSets';
 import Toast from './lib/Toast.svelte';
 
+let selectedSet = $state(ALL_SETS[0]?.id ?? '');
 let sortOrder = $state('name');
 let colorFormat = $state('hex');
 let theme = $state(localStorage.getItem('theme') || 'system');
 let searchTerm = $state('');
+
+const currentSet = $derived(ALL_SETS.find((s) => s.id === selectedSet) ?? null);
 
 let toastMessage = $state('');
 let toastVisible = $state(false);
@@ -79,6 +82,13 @@ function showToast(x: number, y: number) {
             aria-label="Filter colors by name or hex"
             bind:value={searchTerm} />
 
+        <label for="setSelector">Set:</label>
+        <select id="setSelector" bind:value={selectedSet}>
+            {#each ALL_SETS as set (set.id)}
+                <option value={set.id}>{set.title}</option>
+            {/each}
+        </select>
+
         <label for="sortOrder">Sort:</label>
         <select id="sortOrder" bind:value={sortOrder}>
             <option value="name">Name</option>
@@ -106,17 +116,17 @@ function showToast(x: number, y: number) {
 </header>
 
 <main>
-    {#each ALL_SETS as set (set.id)}
+    {#if currentSet}
         <ColorSet
-            title={set.title}
-            id={set.id}
-            rawData={set.data}
-            useNameAsBg={set.useNameAsBg}
+            title={currentSet.title}
+            id={currentSet.id}
+            rawData={currentSet.data}
+            useNameAsBg={currentSet.useNameAsBg}
             {sortOrder}
             {searchTerm}
             {colorFormat}
             onCopy={handleCopy} />
-    {/each}
+    {/if}
 </main>
 
 <footer>
