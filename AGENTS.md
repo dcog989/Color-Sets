@@ -46,7 +46,7 @@ Linux CachyOS, Limine boot loader, KDE Plasma 6, Wayland, Btrfs. Firefox, Kate t
 
 ## Coding Principles
 
-- Use current coding standards and patterns (Svelte 5 runes, modern TS/Rust)
+- Use current coding standards and patterns (Svelte 5 runes, modern TS)
 - KISS, Occam's razor, DRY, YAGNI
 - Optimize for actual and perceived performance
 - Self-documenting code via clear naming
