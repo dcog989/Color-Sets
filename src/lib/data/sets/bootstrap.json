@@ -1,0 +1,23 @@
+{
+  "Blue": "#0d6efd",
+  "Indigo": "#6610f2",
+  "Purple": "#6f42c1",
+  "Pink": "#d63384",
+  "Red": "#dc3545",
+  "Orange": "#fd7e14",
+  "Yellow": "#ffc107",
+  "Green": "#198754",
+  "Teal": "#20c997",
+  "Cyan": "#0dcaf0",
+  "Gray 100": "#f8f9fa",
+  "Gray 200": "#e9ecef",
+  "Gray 300": "#dee2e6",
+  "Gray 400": "#ced4da",
+  "Gray 500": "#adb5bd",
+  "Gray 600": "#6c757d",
+  "Gray 700": "#495057",
+  "Gray 800": "#343a40",
+  "Gray 900": "#212529",
+  "White": "#ffffff",
+  "Black": "#000000"
+}

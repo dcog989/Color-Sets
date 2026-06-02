@@ -1,0 +1,14 @@
+{
+  "Background": "#282a36",
+  "Current Line": "#44475a",
+  "Selection": "#44475a",
+  "Foreground": "#f8f8f2",
+  "Comment": "#6272a4",
+  "Red": "#ff5555",
+  "Orange": "#ffb86c",
+  "Yellow": "#f1fa8c",
+  "Green": "#50fa7b",
+  "Cyan": "#8be9fd",
+  "Purple": "#bd93f9",
+  "Pink": "#ff79c6"
+}

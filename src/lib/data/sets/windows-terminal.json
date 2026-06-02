@@ -1,0 +1,18 @@
+{
+  "Black": "#000000",
+  "DarkBlue": "#000080",
+  "DarkGreen": "#008000",
+  "DarkCyan": "#008080",
+  "DarkRed": "#800000",
+  "DarkMagenta": "#800080",
+  "DarkYellow": "#808000",
+  "Gray": "#c0c0c0",
+  "DarkGray": "#808080",
+  "Blue": "#0000ff",
+  "Green": "#00ff00",
+  "Cyan": "#00ffff",
+  "Red": "#ff0000",
+  "Magenta": "#ff00ff",
+  "Yellow": "#ffff00",
+  "White": "#ffffff"
+}
