@@ -1,41 +1,35 @@
 <script lang="ts">
-import { colordx } from '@colordx/core';
 import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
-import { ALL_SETS } from './lib/data/colorSets';
+import { loadSetData, SET_MANIFEST } from './lib/data/colorSets';
 import Toast from './lib/Toast.svelte';
 
-let selectedSet = $state(ALL_SETS[0]?.id ?? '');
+let selectedSet = $state(SET_MANIFEST[0]?.id ?? '');
 let sortOrder = $state('name');
 let colorFormat = $state('hex');
 let theme = $state(localStorage.getItem('theme') || 'system');
 let cbFilter = $state('none');
 let searchTerm = $state('');
 
-const currentSet = $derived(ALL_SETS.find((s) => s.id === selectedSet) ?? null);
+let currentData = $state<Record<string, string> | null>(null);
+let loading = $state(true);
 
-let systemDark = $state(false);
-
-$effect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    systemDark = mq.matches;
-    const handler = (e: MediaQueryListEvent) => (systemDark = e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-});
-
-const bgColor = $derived(
-    theme === 'dark' || (theme === 'system' && systemDark) ? '#1a1a1a' : '#f0f0f0',
-);
+const currentEntry = $derived(SET_MANIFEST.find((s) => s.id === selectedSet) ?? null);
 
 const title = 'Color Sets';
 
 const titleColors = $derived.by(() => {
-    if (!currentSet) return [];
-    const colors = Object.values(currentSet.data).filter((c: string) => colordx(c).isValid());
-    const valid = colors.filter((c: string) => Math.abs(colordx(c).apcaContrast(bgColor)) >= 45);
-    const pool = valid.length > 0 ? valid : colors;
+    if (!currentData) return [];
+    const pool = Object.values(currentData);
     return [...title].map(() => pool[Math.floor(Math.random() * pool.length)]);
+});
+
+$effect(() => {
+    loading = true;
+    loadSetData(selectedSet).then((data) => {
+        currentData = data;
+        loading = false;
+    });
 });
 
 let toastMessage = $state('');
@@ -120,7 +114,7 @@ function showToast(x: number, y: number) {
 
         <label for="setSelector">Set:</label>
         <select id="setSelector" bind:value={selectedSet}>
-            {#each ALL_SETS as set (set.id)}
+            {#each SET_MANIFEST as set (set.id)}
                 <option value={set.id}>{set.title}</option>
             {/each}
         </select>
@@ -189,12 +183,14 @@ function showToast(x: number, y: number) {
 </header>
 
 <main style={cbFilter !== 'none' ? `filter: url(#cb-${cbFilter})` : ''}>
-    {#if currentSet}
+    {#if loading}
+        <div class="loading">Loading...</div>
+    {:else if currentEntry && currentData}
         <ColorSet
-            title={currentSet.title}
-            id={currentSet.id}
-            rawData={currentSet.data}
-            useNameAsBg={currentSet.useNameAsBg}
+            title={currentEntry.title}
+            id={currentEntry.id}
+            rawData={currentData}
+            useNameAsBg={currentEntry.useNameAsBg}
             {sortOrder}
             {searchTerm}
             {colorFormat}
@@ -287,7 +283,6 @@ function showToast(x: number, y: number) {
         background-color: var(--header-bg-color);
         padding: 10px 20px;
         box-shadow: 0 4px 12px var(--page-shadow-color);
-        transition: background-color 0.3s;
     }
 
     h1 {
@@ -344,12 +339,17 @@ function showToast(x: number, y: number) {
         color: var(--select-text-color);
         cursor: pointer;
         transition:
-            background-color 0.2s,
             border-color 0.2s;
     }
 
     .theme-btn:hover {
         border-color: var(--select-focus-border-color);
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-muted);
     }
 
     @media (max-width: 768px) {

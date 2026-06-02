@@ -88,9 +88,7 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         justify-content: space-between;
         padding: 10px 15px;
         border-radius: 4px;
-        transition:
-            transform 0.2s ease-in-out,
-            box-shadow 0.2s ease-in-out;
+        transition: transform 0.2s ease-in-out;
     }
 
     .item-bg {
@@ -104,7 +102,6 @@ const formatLabel = $derived(colorFormat.toUpperCase());
 
     .color-item:hover {
         transform: scale(1.02);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .copy-icon {
@@ -146,7 +143,6 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         cursor: pointer;
         padding: 0 6px;
         border-radius: 4px;
-        transition: background-color 0.2s ease-in-out;
         white-space: nowrap;
         display: flex;
         align-items: center;
@@ -160,22 +156,20 @@ const formatLabel = $derived(colorFormat.toUpperCase());
 
     .color-copy-group {
         transition:
-            max-width 0.4s ease-in-out,
-            opacity 0.3s ease-in-out,
-            margin-left 0.4s ease-in-out;
-        overflow: hidden;
+            transform 0.3s ease-in-out,
+            opacity 0.3s ease-in-out;
         opacity: 0;
-        max-width: 0;
-        margin-left: 0;
+        transform: translateX(-1ch);
         display: flex;
         align-items: center;
         z-index: 1;
+        pointer-events: none;
     }
 
     .color-item:hover .color-copy-group {
         opacity: 1;
-        max-width: 12em;
-        margin-left: 1ch;
+        transform: translateX(0);
+        pointer-events: auto;
     }
 
     .color-copy-group:hover {

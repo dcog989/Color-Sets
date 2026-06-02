@@ -7,9 +7,11 @@
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json && biome check",
     "clean": "rm -rf build dist .context .svelte-kit node_modules bun.lock",
-    "dev": "vite",
+    "dev": "node scripts/generate-manifest.mjs && vite",
     "format": "biome check --write",
     "lint": "biome check",
+    "manifest": "node scripts/generate-manifest.mjs",
+    "prebuild": "node scripts/generate-manifest.mjs",
     "preview": "vite preview",
     "update": "bun update --latest"
   },

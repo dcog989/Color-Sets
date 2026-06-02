@@ -1,6 +1,7 @@
 import type { Colordx } from '@colordx/core';
 import { colordx, extend } from '@colordx/core';
 import a11y from '@colordx/core/plugins/a11y';
+import { SET_MANIFEST } from './manifest';
 
 extend([a11y]);
 
@@ -11,9 +12,7 @@ type SetModule = {
     colors: Record<string, string>;
 };
 
-const modules = import.meta.glob('./sets/*.json', {
-    eager: true,
-}) as Record<string, SetModule>;
+const modules = import.meta.glob('./sets/*.json');
 
 export type ProcessedColor = {
     name: string;
@@ -48,9 +47,13 @@ export function processColorSet(
     });
 }
 
-export const ALL_SETS = Object.values(modules).map(({ id, title, useNameAsBg, colors }) => ({
-    id,
-    title,
-    data: colors,
-    useNameAsBg,
-}));
+export async function loadSetData(id: string): Promise<Record<string, string> | null> {
+    const entry = SET_MANIFEST.find((m) => m.id === id);
+    if (!entry) return null;
+    const path = `./sets/${entry.file}`;
+    if (!(path in modules)) return null;
+    const mod = (await modules[path]()) as { default: SetModule };
+    return mod.default.colors;
+}
+
+export { SET_MANIFEST };

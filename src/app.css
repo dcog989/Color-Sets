@@ -71,9 +71,7 @@ body {
     margin: 0;
     padding: 20px;
     font-size: 16px;
-    transition:
-        background-color 0.3s,
-        color 0.3s;
+    transition: color 0.3s;
 }
 
 button.icon-btn {

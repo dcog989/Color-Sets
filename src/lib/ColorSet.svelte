@@ -206,7 +206,6 @@ function handleExport(e: Event) {
         background-color: var(--page-bg-color);
         border-radius: 4px;
         box-shadow: 0 4px 12px var(--page-shadow-color);
-        transition: background-color 0.3s;
     }
 
     fieldset {
@@ -235,9 +234,7 @@ function handleExport(e: Event) {
     }
 
     .legend-copy-action {
-        transition:
-            color 0.2s,
-            transform 0.2s ease-in-out;
+        transition: transform 0.2s ease-in-out;
         display: inline-block;
     }
 
