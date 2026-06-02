@@ -11,10 +11,8 @@ let theme = $state(localStorage.getItem('theme') || 'system');
 let cbFilter = $state('none');
 let searchTerm = $state('');
 
-let currentData = $state<Record<string, string> | null>(null);
-let loading = $state(true);
-
 const currentEntry = $derived(SET_MANIFEST.find((s) => s.id === selectedSet) ?? null);
+const currentData = $derived(loadSetData(selectedSet));
 
 const titleColor = $derived.by(() => {
     if (theme === 'light') return '#555';
@@ -26,14 +24,6 @@ const titleColor = $derived.by(() => {
         return '#aaa';
     }
     return '#555';
-});
-
-$effect(() => {
-    loading = true;
-    loadSetData(selectedSet).then((data) => {
-        currentData = data;
-        loading = false;
-    });
 });
 
 let toastMessage = $state('');
@@ -183,9 +173,7 @@ function showToast(x: number, y: number) {
 </header>
 
 <main style={cbFilter !== 'none' ? `filter: url(#cb-${cbFilter})` : ''}>
-    {#if loading}
-        <div class="loading">Loading...</div>
-    {:else if currentEntry && currentData}
+    {#if currentEntry && currentData}
         <ColorSet
             title={currentEntry.title}
             id={currentEntry.id}
@@ -338,18 +326,10 @@ function showToast(x: number, y: number) {
         background: var(--select-bg-color);
         color: var(--select-text-color);
         cursor: pointer;
-        transition:
-            border-color 0.2s;
     }
 
     .theme-btn:hover {
         border-color: var(--select-focus-border-color);
-    }
-
-    .loading {
-        text-align: center;
-        padding: 40px;
-        color: var(--text-muted);
     }
 
     @media (max-width: 768px) {

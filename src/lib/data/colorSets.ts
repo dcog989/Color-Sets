@@ -1,9 +1,16 @@
 import type { Colordx } from '@colordx/core';
-import { colordx, extend } from '@colordx/core';
-import a11y from '@colordx/core/plugins/a11y';
-import { SET_MANIFEST } from './manifest';
+import { colordx } from '@colordx/core';
 
-extend([a11y]);
+function getLuminance(instance: Colordx): number {
+    const { r, g, b } = instance.toRgb();
+    const linearize = (c: number) => {
+        const n = c / 255;
+        return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+    };
+    return Number(
+        (0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)).toFixed(4),
+    );
+}
 
 type SetModule = {
     id: string;
@@ -12,7 +19,12 @@ type SetModule = {
     colors: Record<string, string>;
 };
 
-const modules = import.meta.glob('./sets/*.json');
+export type SetManifestEntry = {
+    id: string;
+    title: string;
+    file: string;
+    useNameAsBg: boolean;
+};
 
 export type ProcessedColor = {
     name: string;
@@ -23,6 +35,29 @@ export type ProcessedColor = {
     luminance: number;
 };
 
+const setModules = import.meta.glob<SetModule>('./sets/*.json', {
+    eager: true,
+    import: 'default',
+});
+
+export const SET_MANIFEST: SetManifestEntry[] = Object.entries(setModules)
+    .map(([path, mod]) => ({
+        id: mod.id,
+        title: mod.title,
+        file: path.replace('./sets/', ''),
+        useNameAsBg: mod.useNameAsBg ?? false,
+    }))
+    .sort((a, b) => a.file.localeCompare(b.file));
+
+const setDataMap: Record<string, SetModule> = {};
+for (const mod of Object.values(setModules)) {
+    setDataMap[mod.id] = mod;
+}
+
+export function loadSetData(id: string): Record<string, string> | null {
+    return setDataMap[id]?.colors ?? null;
+}
+
 export function processColorSet(
     colorObject: Record<string, string>,
     nameIsColor = false,
@@ -32,7 +67,7 @@ export function processColorSet(
         if (!instance.isValid()) return [];
 
         const hsl = instance.toHsl();
-        const luminance = instance.luminance();
+        const luminance = getLuminance(instance);
         let effectiveSortHue = -1;
         if (hsl.s > 0) effectiveSortHue = Number.isNaN(hsl.h) ? 0 : hsl.h;
 
@@ -46,14 +81,3 @@ export function processColorSet(
         };
     });
 }
-
-export async function loadSetData(id: string): Promise<Record<string, string> | null> {
-    const entry = SET_MANIFEST.find((m) => m.id === id);
-    if (!entry) return null;
-    const path = `./sets/${entry.file}`;
-    if (!(path in modules)) return null;
-    const mod = (await modules[path]()) as { default: SetModule };
-    return mod.default.colors;
-}
-
-export { SET_MANIFEST };
