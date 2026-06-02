@@ -2,13 +2,14 @@
 import ColorItem from './ColorItem.svelte';
 import { processColorSet } from './data/colorSets';
 
-const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, onCopy } = $props<{
+const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, colorFormat, onCopy } = $props<{
     title: string;
     id: string;
     rawData: Record<string, string>;
     useNameAsBg: boolean;
     sortOrder: string;
     searchTerm: string;
+    colorFormat: string;
     onCopy: (text: string, message: string, x: number, y: number) => void;
 }>();
 
@@ -88,7 +89,7 @@ function copySetCSS(e: MouseEvent) {
                 <!-- Manual lazy loading removed to fix Cumulative Layout Shift (CLS) -->
                 <!-- Browser rendering for this amount of data is performant enough -->
                 {#each finalData as color (color.name)}
-                    <ColorItem {color} useNameForBg={useNameAsBg} {onCopy} />
+                    <ColorItem {color} useNameForBg={useNameAsBg} {colorFormat} {onCopy} />
                 {/each}
             </ul>
         </fieldset>

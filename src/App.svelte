@@ -5,6 +5,7 @@ import { ALL_SETS } from './lib/data/colorSets';
 import Toast from './lib/Toast.svelte';
 
 let sortOrder = $state('name');
+let colorFormat = $state('hex');
 let theme = $state(localStorage.getItem('theme') || 'system');
 let searchTerm = $state('');
 
@@ -85,6 +86,14 @@ function showToast(x: number, y: number) {
             <option value="luminosity">Luminosity</option>
         </select>
 
+        <label for="colorFormat">Format:</label>
+        <select id="colorFormat" bind:value={colorFormat}>
+            <option value="hex">Hex</option>
+            <option value="rgb">RGB</option>
+            <option value="hsl">HSL</option>
+            <option value="oklch">OKLCH</option>
+        </select>
+
         <label for="themeSelector">Theme:</label>
         <select
             id="themeSelector"
@@ -105,6 +114,7 @@ function showToast(x: number, y: number) {
             useNameAsBg={set.useNameAsBg}
             {sortOrder}
             {searchTerm}
+            {colorFormat}
             onCopy={handleCopy} />
     {/each}
 </main>

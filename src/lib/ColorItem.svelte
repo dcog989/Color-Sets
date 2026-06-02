@@ -1,11 +1,28 @@
 <script lang="ts">
+import type { Colordx } from '@colordx/core';
 import type { ProcessedColor } from './data/colorSets';
 
-const { color, useNameForBg, onCopy } = $props<{
+const { color, useNameForBg, colorFormat, onCopy } = $props<{
     color: ProcessedColor;
     useNameForBg: boolean;
+    colorFormat: string;
     onCopy: (text: string, message: string, x: number, y: number) => void;
 }>();
+
+function formatColor(instance: Colordx, format: string): string {
+    switch (format) {
+        case 'rgb':
+            return instance.toRgbString();
+        case 'hsl':
+            return instance.toHslString();
+        case 'oklch':
+            return instance.toOklchString();
+        default:
+            return instance.toHex();
+    }
+}
+
+const formatted = $derived(formatColor(color.instance, colorFormat));
 
 // Threshold of 0.179 is the standard W3C point where
 // black vs white text yields equal contrast ratios.
@@ -14,11 +31,13 @@ function isLight(c: ProcessedColor) {
     return c.luminance > 0.179;
 }
 
-function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
+function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
     e.stopPropagation();
     const message = type === 'name' ? `Copied "${text}"!` : `Copied ${text}!`;
     onCopy(text, message, e.clientX, e.clientY);
 }
+
+const formatLabel = $derived(colorFormat.toUpperCase());
 </script>
 
 <li
@@ -27,7 +46,7 @@ function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
     <div
         class="item-bg"
         role="presentation"
-        onclick={(e) => handleCopy('hex', color.instance.toHex(), e)}>
+        onclick={(e) => handleCopy('value', formatted, e)}>
     </div>
     <div class="color-info">
         <button
@@ -41,9 +60,9 @@ function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
     <button
         type="button"
         class="color-copy-group color-swatch-action icon-btn"
-        onclick={(e) => handleCopy('hex', color.instance.toHex(), e)}
-        aria-label="Copy Hex Code">
-        <span class="color-hex">{color.instance.toHex()}</span>
+        onclick={(e) => handleCopy('value', formatted, e)}
+        aria-label="Copy {formatLabel}">
+        <span class="color-value">{formatted}</span>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
