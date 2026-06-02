@@ -112,8 +112,3 @@ input[type="search"]:focus {
     border-color: var(--select-focus-border-color);
     box-shadow: 0 0 0 2px var(--select-focus-shadow-color);
 }
-
-.page-container {
-    content-visibility: auto;
-    contain-intrinsic-size: 1000px;
-}

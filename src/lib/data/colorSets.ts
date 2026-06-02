@@ -1,8 +1,8 @@
-import { type Colordx, colordx, extend } from '@colordx/core';
+import type { Colordx } from '@colordx/core';
+import { colordx, extend } from '@colordx/core';
 import a11y from '@colordx/core/plugins/a11y';
-import names from '@colordx/core/plugins/names';
 
-extend([names, a11y]);
+extend([a11y]);
 
 type SetModule = {
     id: string;

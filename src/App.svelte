@@ -16,15 +16,14 @@ let toastY = $state(0);
 let toastTimeout: ReturnType<typeof setTimeout>;
 
 $effect(() => {
-    const currentTheme = theme;
     localStorage.setItem('theme', theme);
 
-    if (currentTheme === 'light') {
+    if (theme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
         document
             .querySelector('meta[name="theme-color"][media*="light"]')
             ?.setAttribute('content', '#ffffff');
-    } else if (currentTheme === 'dark') {
+    } else if (theme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         document
             .querySelector('meta[name="theme-color"][media*="dark"]')

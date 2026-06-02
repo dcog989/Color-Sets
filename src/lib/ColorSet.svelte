@@ -97,6 +97,8 @@ function copySetCSS(e: MouseEvent) {
 
 <style>
     .page-container {
+        content-visibility: auto;
+        contain-intrinsic-size: 1000px;
         max-width: 1280px;
         margin: 0 auto 20px;
         padding: 10px 20px 20px;
