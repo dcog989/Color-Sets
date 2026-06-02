@@ -33,6 +33,7 @@ export type ProcessedColor = {
     saturation: number;
     lightness: number;
     luminance: number;
+    chroma: number;
 };
 
 const setModules = import.meta.glob<SetModule>('./sets/*.json', {
@@ -68,6 +69,7 @@ export function processColorSet(
 
         const hsl = instance.toHsl();
         const luminance = getLuminance(instance);
+        const oklch = instance.toOklch();
         let effectiveSortHue = -1;
         if (hsl.s > 0) effectiveSortHue = Number.isNaN(hsl.h) ? 0 : hsl.h;
 
@@ -78,6 +80,7 @@ export function processColorSet(
             saturation: hsl.s,
             lightness: hsl.l,
             luminance,
+            chroma: oklch.c,
         };
     });
 }

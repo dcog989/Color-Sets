@@ -112,8 +112,9 @@ function showToast(x: number, y: number) {
         <label for="sortOrder">Sort:</label>
         <select id="sortOrder" bind:value={sortOrder}>
             <option value="name">Name</option>
+            <option value="lightness">Lightness</option>
+            <option value="chroma">Chroma</option>
             <option value="hue">Hue</option>
-            <option value="luminosity">Luminosity</option>
         </select>
 
         <label for="colorFormat">Format:</label>

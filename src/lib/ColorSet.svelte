@@ -46,9 +46,9 @@ const finalData = $derived.by(() => {
 
     // 2. Sort
     data.sort((a, b) => {
-        if (sortOrder === 'luminosity') return b.luminance - a.luminance;
+        if (sortOrder === 'lightness') return b.lightness - a.lightness;
+        if (sortOrder === 'chroma') return b.chroma - a.chroma;
         if (sortOrder === 'hue') {
-            // Handle grayscale/achromatic colors first in hue sort
             if (a.hue === -1 && b.hue === -1) return a.lightness - b.lightness;
             if (a.hue === -1) return 1;
             if (b.hue === -1) return -1;
