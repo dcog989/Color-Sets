@@ -86,7 +86,7 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 10px 15px;
+        padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.5vw, 15px);
         border-radius: 4px;
         transition: transform 0.2s ease-in-out;
     }
@@ -100,8 +100,10 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         z-index: 0;
     }
 
-    .color-item:hover {
-        transform: scale(1.02);
+    @media (hover: hover) {
+        .color-item:hover {
+            transform: scale(1.02);
+        }
     }
 
     .copy-icon {
@@ -109,6 +111,19 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         height: 24px;
         pointer-events: none;
         margin-left: 4px;
+    }
+
+    @media (max-width: 480px) {
+        .copy-icon {
+            width: 18px;
+            height: 18px;
+        }
+        .color-value {
+            font-size: 0.85em;
+        }
+        .color-info {
+            font-size: 0.85em;
+        }
     }
 
     .color-item.light-bg {
@@ -136,6 +151,7 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         overflow: hidden;
         z-index: 1;
         pointer-events: none;
+        min-width: 0;
     }
 
     .color-swatch-action {
@@ -148,6 +164,12 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         align-items: center;
         height: 24px;
         z-index: 1;
+        min-width: 0;
+    }
+
+    .color-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .color-swatch-action:hover {
@@ -158,18 +180,31 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         transition:
             transform 0.3s ease-in-out,
             opacity 0.3s ease-in-out;
-        opacity: 0;
-        transform: translateX(-1ch);
         display: flex;
         align-items: center;
         z-index: 1;
         pointer-events: none;
     }
 
-    .color-item:hover .color-copy-group {
-        opacity: 1;
-        transform: translateX(0);
-        pointer-events: auto;
+    @media (hover: hover) {
+        .color-copy-group {
+            opacity: 0;
+            transform: translateX(-1ch);
+        }
+
+        .color-item:hover .color-copy-group {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+    }
+
+    @media (hover: none) {
+        .color-copy-group {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
     }
 
     .color-copy-group:hover {

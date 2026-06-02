@@ -202,7 +202,7 @@ function handleExport(e: Event) {
         contain-intrinsic-size: 1000px;
         max-width: 1280px;
         margin: 0 auto 20px;
-        padding: 10px 20px 20px;
+        padding: clamp(6px, 1.5vw, 10px) clamp(8px, 2vw, 20px) clamp(12px, 2vw, 20px);
         background-color: var(--page-bg-color);
         border-radius: 4px;
         box-shadow: 0 4px 12px var(--page-shadow-color);
@@ -211,26 +211,32 @@ function handleExport(e: Event) {
     fieldset {
         border: 1px solid var(--fieldset-border-color);
         border-radius: 4px;
-        padding: 15px;
+        padding: clamp(8px, 1.5vw, 15px);
         margin: 0;
     }
 
     legend {
-        font-size: 1.2em;
+        font-size: clamp(1em, 2.5vw, 1.2em);
         font-weight: 600;
         color: var(--legend-text-color);
         padding: 0 10px;
         margin-left: 5px;
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
     }
 
     .legend-actions {
         font-size: 0.8em;
         font-weight: normal;
-        margin-left: 15px;
+        margin-left: 5px;
         color: var(--select-focus-border-color);
-        white-space: nowrap;
+        white-space: normal;
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
     }
 
     .legend-copy-action {
@@ -265,10 +271,9 @@ function handleExport(e: Event) {
         list-style: none;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(245px, 100%), 1fr));
         grid-auto-rows: max-content;
-        gap: 15px;
-        /* min-height removed to allow container to shrink to a single row */
+        gap: clamp(8px, 1.5vw, 15px);
         align-content: start;
     }
 </style>

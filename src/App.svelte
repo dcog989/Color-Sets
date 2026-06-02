@@ -335,11 +335,47 @@ function showToast(x: number, y: number) {
     @media (max-width: 768px) {
         header {
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            padding: 10px;
+            margin: 6px auto 20px;
         }
         .controls-container {
             flex-wrap: wrap;
             justify-content: center;
+            gap: 6px;
+        }
+        h1 {
+            font-size: 1.6em;
+            letter-spacing: 2px;
+            margin: 10px auto 4px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .controls-container label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
+        .controls-container select {
+            flex: 1 1 auto;
+            min-width: 0;
+            font-size: 0.85em;
+            padding: 6px 8px;
+        }
+        .theme-toggle {
+            margin-left: 0;
+        }
+        h1 {
+            font-size: 1.3em;
+            letter-spacing: 1px;
+        }
+        footer {
+            padding: 12px 10px;
+            font-size: 0.8em;
         }
     }
 

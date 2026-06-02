@@ -12,7 +12,7 @@ const { message, visible, success, x, y } = $props<{
     class="copy-notification {visible ? 'show' : 'hide'}"
     role="alert"
     aria-live="polite"
-    style="top: {Math.min(y, window.innerHeight - 60)}px; left: {Math.max(x, 100)}px; background-color: {success
+    style="top: {Math.min(y, window.innerHeight - 60)}px; left: {Math.min(Math.max(x, 80), window.innerWidth - 80)}px; background-color: {success
         ? 'var(--notification-bg-color)'
         : 'var(--notification-fail-bg-color)'}">
     {message}
