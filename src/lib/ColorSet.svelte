@@ -1,6 +1,20 @@
 <script lang="ts">
+import type { Colordx } from '@colordx/core';
 import ColorItem from './ColorItem.svelte';
 import { processColorSet } from './data/colorSets';
+
+function formatColor(instance: Colordx, format: string): string {
+    switch (format) {
+        case 'rgb':
+            return instance.toRgbString();
+        case 'hsl':
+            return instance.toHslString();
+        case 'oklch':
+            return instance.toOklchString();
+        default:
+            return instance.toHex();
+    }
+}
 
 const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, colorFormat, onCopy } = $props<{
     title: string;
@@ -12,6 +26,8 @@ const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, colorFormat, onC
     colorFormat: string;
     onCopy: (text: string, message: string, x: number, y: number) => void;
 }>();
+
+const formatLabel = $derived(colorFormat.toUpperCase());
 
 // Process data once (props are static)
 const processedData = $derived(processColorSet(rawData, useNameAsBg));
@@ -58,10 +74,13 @@ function copySetCSS(e: MouseEvent) {
         .replace(/-$/, '')
         .replace(/--/g, '-');
     const properties = finalData
-        .map((c) => `    --${c.name.toLowerCase().replace(/[\s/]+/g, '-')}: ${c.instance.toHex()};`)
+        .map(
+            (c) =>
+                `    --${c.name.toLowerCase().replace(/[\s/]+/g, '-')}: ${formatColor(c.instance, colorFormat)};`,
+        )
         .join('\n');
     const text = `[data-theme="${themeName}"] {\n${properties}\n}`;
-    onCopy(text, 'Copied as CSS theme block!', e.clientX, e.clientY);
+    onCopy(text, `Copied as CSS theme block!`, e.clientX, e.clientY);
 }
 </script>
 
@@ -80,7 +99,7 @@ function copySetCSS(e: MouseEvent) {
                     </button>
                     |
                     <button type="button" class="legend-copy-action text-btn" onclick={copySetCSS}>
-                        Copy Hex Values
+                        Copy {formatLabel} Values
                     </button>
                 </span>
             </legend>
