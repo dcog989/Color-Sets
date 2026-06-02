@@ -12,7 +12,6 @@ export type ProcessedColor = {
     saturation: number;
     lightness: number;
     luminance: number;
-    effectiveHue: number;
 };
 
 export const powershellColors = {
@@ -187,7 +186,7 @@ export function processColorSet(
     colorObject: Record<string, string>,
     nameIsColor = false,
 ): ProcessedColor[] {
-    return Object.entries(colorObject).map(([name, value]) => {
+    return Object.entries(colorObject).flatMap(([name, value]) => {
         const instance = GoatColor(nameIsColor ? name : value);
         let hsl = { h: 0, s: 0, l: 0 };
         let luminance = 0;
@@ -199,6 +198,8 @@ export function processColorSet(
             if (hsl.s > 0) effectiveSortHue = Number.isNaN(hsl.h) ? 0 : hsl.h;
         }
 
+        if (!instance.isValid()) return [];
+
         return {
             name,
             instance,
@@ -206,7 +207,6 @@ export function processColorSet(
             saturation: hsl.s,
             lightness: hsl.l,
             luminance,
-            effectiveHue: effectiveSortHue,
         };
     });
 }

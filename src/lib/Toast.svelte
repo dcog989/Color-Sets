@@ -1,12 +1,18 @@
 <script lang="ts">
-const { message, visible, success, x, y } = $props();
+const { message, visible, success, x, y } = $props<{
+    message: string;
+    visible: boolean;
+    success: boolean;
+    x: number;
+    y: number;
+}>();
 </script>
 
 <div
     class="copy-notification {visible ? 'show' : 'hide'}"
     role="alert"
     aria-live="polite"
-    style="top: {y}px; left: {x}px; background-color: {success
+    style="top: {Math.min(y, window.innerHeight - 60)}px; left: {Math.max(x, 100)}px; background-color: {success
         ? 'var(--notification-bg-color)'
         : 'var(--notification-fail-bg-color)'}">
     {message}

@@ -17,8 +17,6 @@ const processedData = $derived(processColorSet(rawData, useNameAsBg));
 
 // Filter & Sort Logic using derived state
 const finalData = $derived.by(() => {
-    if (!processedData) return [];
-
     let data = [...processedData];
 
     // 1. Filter
@@ -34,9 +32,9 @@ const finalData = $derived.by(() => {
         if (sortOrder === 'luminosity') return b.luminance - a.luminance;
         if (sortOrder === 'hue') {
             // Handle grayscale/achromatic colors first in hue sort
-            if (a.effectiveHue === -1 && b.effectiveHue === -1) return a.lightness - b.lightness;
-            if (a.effectiveHue === -1) return 1;
-            if (b.effectiveHue === -1) return -1;
+            if (a.hue === -1 && b.hue === -1) return a.lightness - b.lightness;
+            if (a.hue === -1) return 1;
+            if (b.hue === -1) return -1;
 
             if (a.hue !== b.hue) return a.hue - b.hue;
             if (a.lightness !== b.lightness) return a.lightness - b.lightness;

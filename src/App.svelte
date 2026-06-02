@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount } from 'svelte';
+import { onDestroy, onMount } from 'svelte';
 import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
 import { ALL_SETS } from './lib/data/colorSets';
@@ -20,34 +20,58 @@ function updateTheme(newTheme: string) {
     theme = newTheme;
     localStorage.setItem('theme', newTheme);
 
-    if (newTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
-    else if (newTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-    else document.documentElement.removeAttribute('data-theme');
+    if (newTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document
+            .querySelector('meta[name="theme-color"][media*="light"]')
+            ?.setAttribute('content', '#ffffff');
+    } else if (newTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document
+            .querySelector('meta[name="theme-color"][media*="dark"]')
+            ?.setAttribute('content', '#1a1a1a');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
 }
+
+let mql: MediaQueryList;
 
 onMount(() => {
     const savedTheme = localStorage.getItem('theme') || 'system';
     updateTheme(savedTheme);
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        if (theme === 'system') updateTheme('system');
-    });
+    mql = window.matchMedia('(prefers-color-scheme: dark)');
+    mql.addEventListener('change', handleSystemThemeChange);
 });
 
+onDestroy(() => {
+    mql?.removeEventListener('change', handleSystemThemeChange);
+});
+
+function handleSystemThemeChange() {
+    if (theme === 'system') updateTheme('system');
+}
+
 function handleCopy(text: string, message: string, x: number, y: number) {
-    navigator.clipboard
-        .writeText(text)
-        .then(() => {
+    if (!navigator.clipboard?.writeText) {
+        toastMessage = 'Copy failed!';
+        toastSuccess = false;
+        showToast(x, y);
+        return;
+    }
+    navigator.clipboard.writeText(text).then(
+        () => {
             toastMessage = message;
             toastSuccess = true;
             showToast(x, y);
-        })
-        .catch((err) => {
-            console.error(err);
+        },
+        () => {
             toastMessage = 'Copy failed!';
             toastSuccess = false;
             showToast(x, y);
-        });
+        },
+    );
 }
 
 function showToast(x: number, y: number) {
@@ -84,8 +108,8 @@ function showToast(x: number, y: number) {
         <label for="themeSelector">Theme:</label>
         <select
             id="themeSelector"
-            value={theme}
-            onchange={(e) => updateTheme(e.currentTarget.value)}>
+            bind:value={theme}
+            onchange={() => updateTheme(theme)}>
             <option value="system">System</option>
             <option value="light">Light</option>
             <option value="dark">Dark</option>

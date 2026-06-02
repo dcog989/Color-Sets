@@ -41,7 +41,8 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 const round = (value: number | string, decimals = 0) => {
     const num = parseFloat(String(value));
     if (isNaN(num)) return value;
-    return Number(Math.round(Number(num + 'e' + decimals)) + 'e-' + decimals);
+    const factor = 10 ** decimals;
+    return Math.round(num * factor) / factor;
 };
 
 const isPercentage = (str: string | number) => typeof str === 'string' && str.endsWith('%');
@@ -307,7 +308,7 @@ export const CSS_NAMED_COLORS: Record<string, string> = {
     teal: '#008080',
     thistle: '#d8bfd8',
     tomato: '#ff6347',
-    transparent: '#00000000',
+    // transparent intentionally omitted — not a displayable color
     turquoise: '#40e0d0',
     violet: '#ee82ee',
     wheat: '#f5deb3',
@@ -352,7 +353,7 @@ export class GoatColorInternal {
         }
 
         const lowerStr = str.toLowerCase();
-        if (CSS_NAMED_COLORS.hasOwnProperty(lowerStr)) {
+        if (Object.hasOwn(CSS_NAMED_COLORS, lowerStr)) {
             str = CSS_NAMED_COLORS[lowerStr];
         }
 
@@ -869,10 +870,7 @@ export class GoatColorInternal {
         i._alphaInputStyleHint = alphaStyleHint;
         i.valid = true;
 
-        const tempAlphaFormatter = new GoatColorInternal(null);
-        tempAlphaFormatter.a = i.a;
-        tempAlphaFormatter._alphaInputStyleHint = i._alphaInputStyleHint;
-        const alphaStrForInput = tempAlphaFormatter._getAlphaString();
+        const alphaStrForInput = i._getAlphaString();
 
         if (i.a === 1) {
             i.input = `rgb(${i.r} ${i.g} ${i.b})`;

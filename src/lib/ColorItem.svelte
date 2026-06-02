@@ -19,21 +19,16 @@ function handleCopy(type: 'name' | 'hex', text: string, e: MouseEvent) {
     const message = type === 'name' ? `Copied "${text}"!` : `Copied ${text}!`;
     onCopy(text, message, e.clientX, e.clientY);
 }
-
-function handleItemClick(e: MouseEvent) {
-    handleCopy('hex', color.instance.toHex(), e);
-}
 </script>
 
 <li
     class="color-item {isLight(color) ? 'light-bg' : 'dark-bg'}"
     style="background-color: {useNameForBg ? color.name : color.instance.toHex()}">
-    <button
-        type="button"
-        class="item-bg-btn"
-        aria-label="Copy {color.name} hex code"
-        onclick={handleItemClick}></button>
-
+    <div
+        class="item-bg"
+        role="presentation"
+        onclick={(e) => { if (e.target === e.currentTarget) handleCopy('hex', color.instance.toHex(), e); }}>
+    </div>
     <div class="color-info">
         <button
             type="button"
@@ -77,18 +72,14 @@ function handleItemClick(e: MouseEvent) {
         transition:
             transform 0.2s ease-in-out,
             box-shadow 0.2s ease-in-out;
-        will-change: transform;
     }
 
-    .item-bg-btn {
+    .item-bg {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: transparent;
-        border: none;
-        cursor: pointer;
         z-index: 0;
     }
 
