@@ -1,42 +1,25 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUnusedVariables": "error",
-        "noUnusedImports": "error"
-      },
-      "style": {
-        "useImportType": "error",
-        "noNonNullAssertion": "off",
-        "useConst": "off"
-      },
-      "suspicious": {
-        "noExplicitAny": "error"
-      }
-    }
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "includes": ["**", "!.assets", "!.context", "!.svelte-kit", "!node_modules", "!src-tauri"]
   },
   "formatter": {
-    "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 4,
-    "lineWidth": 100,
-    "lineEnding": "lf"
+    "lineWidth": 120
   },
   "javascript": {
     "formatter": {
-      "arrowParentheses": "always",
-      "bracketSameLine": true,
-      "quoteStyle": "single",
-      "semicolons": "always",
-      "trailingCommas": "all"
+      "quoteStyle": "single"
     }
   },
-  "files": {
-    "includes": ["**", "!**/build", "!**/.svelte-kit", "!**/dist", "!*.md", "!**/*.md"]
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "html": {
+    "experimentalFullSupportEnabled": true
   },
   "overrides": [
     {
@@ -48,12 +31,6 @@
             "noUnusedImports": "off"
           }
         }
-      }
-    },
-    {
-      "includes": ["**/*.yml", "**/*.yaml", "**/*.toml", "**/*.json"],
-      "formatter": {
-        "indentWidth": 2
       }
     }
   ]
