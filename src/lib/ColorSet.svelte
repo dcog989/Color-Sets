@@ -135,7 +135,8 @@ function handleExport(e: Event) {
             return;
     }
 
-    const rect = exportSelect!.getBoundingClientRect();
+    if (!exportSelect) return;
+    const rect = exportSelect.getBoundingClientRect();
     onCopy(text, `Copied as ${label}!`, rect.left + rect.width / 2, rect.top);
 }
 </script>
