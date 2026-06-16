@@ -30,11 +30,12 @@ const formatLabel = $derived(colorFormat.toUpperCase());
 <li
     class="color-item {isLight(color) ? 'light-bg' : 'dark-bg'}"
     style="background-color: {useNameForBg ? color.name : color.instance.toHex()}">
-    <div
+    <button
+        type="button"
         class="item-bg"
-        role="presentation"
+        aria-label="Copy {formatLabel}"
         onclick={(e) => handleCopy('value', formatted, e)}>
-    </div>
+    </button>
     <div class="color-info">
         <button
             type="button"
@@ -86,6 +87,10 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         width: 100%;
         height: 100%;
         z-index: 0;
+        border: none;
+        background: none;
+        padding: 0;
+        cursor: pointer;
     }
 
     @media (hover: hover) {
