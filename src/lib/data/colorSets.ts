@@ -1,5 +1,8 @@
 import type { Colordx } from '@colordx/core';
-import { colordx } from '@colordx/core';
+import { colordx, extend } from '@colordx/core';
+import names from '@colordx/core/plugins/names';
+
+extend([names]);
 
 function getLuminance(instance: Colordx): number {
   const { r, g, b } = instance.toRgb();
