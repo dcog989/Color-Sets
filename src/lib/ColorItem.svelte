@@ -180,7 +180,7 @@ const formatLabel = $derived(colorFormat.toUpperCase());
         align-items: center;
         z-index: 1;
         pointer-events: none;
-        background: inherit;
+        background-color: inherit;
         border-radius: 4px;
     }
 
