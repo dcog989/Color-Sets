@@ -170,24 +170,27 @@ const formatLabel = $derived(colorFormat.toUpperCase());
     }
 
     .color-copy-group {
+        position: absolute;
+        right: clamp(8px, 1.5vw, 15px);
+        top: 50%;
+        translate: 0 -50%;
         transition:
-            transform 0.3s ease-in-out,
             opacity 0.3s ease-in-out;
         display: flex;
         align-items: center;
         z-index: 1;
         pointer-events: none;
+        background: inherit;
+        border-radius: 4px;
     }
 
     @media (hover: hover) {
         .color-copy-group {
             opacity: 0;
-            transform: translateX(-1ch);
         }
 
         .color-item:hover .color-copy-group {
             opacity: 1;
-            transform: translateX(0);
             pointer-events: auto;
         }
     }
@@ -195,7 +198,6 @@ const formatLabel = $derived(colorFormat.toUpperCase());
     @media (hover: none) {
         .color-copy-group {
             opacity: 1;
-            transform: translateX(0);
             pointer-events: auto;
         }
     }
