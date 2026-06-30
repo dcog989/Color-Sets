@@ -12,7 +12,16 @@ let cbFilter = $state('none');
 let searchTerm = $state('');
 
 const currentEntry = $derived(SET_MANIFEST.find((s) => s.id === selectedSet) ?? null);
-const currentData = $derived(loadSetData(selectedSet));
+
+let currentData = $state<Record<string, string> | null>(null);
+
+$effect(() => {
+  const id = selectedSet;
+  currentData = null;
+  loadSetData(id).then((data) => {
+    if (id === selectedSet) currentData = data;
+  });
+});
 
 const titleColor = $derived.by(() => {
     if (theme === 'light') return '#555';
