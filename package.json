@@ -14,16 +14,16 @@
     "update": "bun update --latest"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.0",
+    "@biomejs/biome": "^2.5.1",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@tsconfig/svelte": "^5.0.8",
-    "@types/node": "^25.9.3",
-    "svelte": "^5.56.3",
-    "svelte-check": "^4.6.0",
+    "@types/node": "^26.0.1",
+    "svelte": "^5.56.4",
+    "svelte-check": "^4.7.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.16"
+    "vite": "^8.1.1"
   },
   "dependencies": {
-    "@colordx/core": "^5.4.3"
+    "@colordx/core": "^5.5.0"
   }
 }
