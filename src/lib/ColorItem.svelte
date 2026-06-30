@@ -12,8 +12,9 @@ const { color, useNameForBg, colorFormat, formatLabel, onCopy } = $props<{
 
 const formatted = $derived(formatColor(color.instance, colorFormat));
 const bgColor = $derived(useNameForBg ? color.name : color.instance.toHex());
+const isLight = $derived(color.instance.isLight());
 const copyBg = $derived(
-  color.instance.isLight()
+  isLight
     ? color.instance.darken(0.15).toHex()
     : color.instance.lighten(0.15).toHex()
 );
@@ -27,7 +28,7 @@ function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
 </script>
 
 <li
-    class="color-item {color.instance.isLight() ? 'light-bg' : 'dark-bg'}"
+    class="color-item {isLight ? 'light-bg' : 'dark-bg'}"
     style="background-color: {bgColor}">
     <button
         type="button"
