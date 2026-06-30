@@ -4,7 +4,7 @@ Color Sets provides an interactive display of color sets, such as CSS Colors, Ta
 
 ## Dev Environment
 
-Linux CachyOS, Limine boot loader, KDE Plasma 6, Wayland, Btrfs. Firefox, Kate text editor, Zed code editor, fish shell with Ghostty + Fresh editor. paru and bun package managers. All software is updated as of today.
+Linux CachyOS / KDE Plasma 6 + Firefox, Zed code editor, fish shell with Ghostty + Fresh editor. yay and bun package managers. All software is updated as of today.
 
 ## Tech Stack
 
