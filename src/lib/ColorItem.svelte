@@ -11,6 +11,12 @@ const { color, useNameForBg, colorFormat, formatLabel, onCopy } = $props<{
 }>();
 
 const formatted = $derived(formatColor(color.instance, colorFormat));
+const bgColor = $derived(useNameForBg ? color.name : color.instance.toHex());
+const copyBg = $derived(
+  isLight(color)
+    ? color.instance.darken(0.15).toHex()
+    : color.instance.lighten(0.15).toHex()
+);
 
 // Threshold of 0.179 is the standard W3C point where
 // black vs white text yields equal contrast ratios.
@@ -29,7 +35,7 @@ function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
 
 <li
     class="color-item {isLight(color) ? 'light-bg' : 'dark-bg'}"
-    style="background-color: {useNameForBg ? color.name : color.instance.toHex()}">
+    style="background-color: {bgColor}">
     <button
         type="button"
         class="item-bg"
@@ -49,7 +55,8 @@ function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
         type="button"
         class="color-copy-group color-swatch-action icon-btn"
         onclick={(e) => handleCopy('value', formatted, e)}
-        aria-label="Copy {formatLabel}">
+        aria-label="Copy {formatLabel}"
+        style="background-color: {copyBg}">
         <span class="color-value">{formatted}</span>
         <svg
             aria-hidden="true"
@@ -180,7 +187,6 @@ function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
         align-items: center;
         z-index: 1;
         pointer-events: none;
-        background-color: inherit;
         border-radius: 4px;
     }
 
