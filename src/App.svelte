@@ -3,7 +3,7 @@ import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
 import { loadSetData, SET_MANIFEST } from './lib/data/manifest';
 import Toast from './lib/Toast.svelte';
-import { cycleTheme, getIsDark, getTheme, getTitleColor } from './lib/theme.svelte.ts';
+import { cycleTheme, getIsDark, getTheme } from './lib/theme.svelte.ts';
 
 let selectedSet = $state(SET_MANIFEST[0]?.id ?? '');
 let sortOrder = $state('name');
@@ -84,7 +84,7 @@ function showToast(x: number, y: number) {
 }
 </script>
 
-<h1 style="color: {getTitleColor()}">Color Sets</h1>
+<h1>Color Sets</h1>
 <header>
     <div class="controls-container">
         <input
@@ -273,6 +273,7 @@ function showToast(x: number, y: number) {
         max-width: 1280px;
         padding: 0 20px;
         font-size: 2.4em;
+        color: var(--heading-color);
     }
 
     .controls-container {

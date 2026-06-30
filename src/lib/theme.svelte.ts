@@ -15,15 +15,6 @@ export function getIsDark(): boolean {
   );
 }
 
-export function getTitleColor(): string {
-  if (theme === 'light') return '#555';
-  if (theme === 'dark') return '#aaa';
-  if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return '#aaa';
-  }
-  return '#555';
-}
-
 export function cycleTheme() {
   const idx = THEME_CYCLE.indexOf(theme);
   theme = THEME_CYCLE[(idx + 1) % THEME_CYCLE.length];

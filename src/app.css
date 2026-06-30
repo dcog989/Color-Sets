@@ -5,6 +5,7 @@
   --link-color: #0078d4;
   --header-bg-color: #ddd;
   --header-color: hotpink;
+  --heading-color: #555;
   --page-bg-color: #ffffff;
   --page-shadow-color: rgba(0, 0, 0, 0.1);
   --select-bg-color: #e9e9e9;
@@ -28,6 +29,7 @@
   --link-color: #5cb8ff;
   --header-bg-color: #333;
   --header-color: hotpink;
+  --heading-color: #aaa;
   --page-bg-color: #222;
   --page-shadow-color: rgba(0, 0, 0, 0.3);
   --select-bg-color: #333;
