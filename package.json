@@ -1,7 +1,7 @@
 {
   "name": "colorsets",
   "private": true,
-  "version": "3.3.0",
+  "version": "3.3.1",
   "type": "module",
   "scripts": {
     "build": "vite build",
@@ -11,7 +11,7 @@
     "format": "biome check --write",
     "lint": "biome check",
     "preview": "vite preview",
-    "update": "bun update --latest  && bun install"
+    "update": "bun update --latest"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.1",
