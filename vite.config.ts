@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [svelte(), ...(process.env.ANALYZE ? [visualizer({ open: true })] : [])],
   base: '/Color-Sets/',
   build: {
-    sourcemap: false,
+    sourcemap: 'hidden',
   },
 });
