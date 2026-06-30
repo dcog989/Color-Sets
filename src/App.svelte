@@ -3,11 +3,11 @@ import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
 import { loadSetData, SET_MANIFEST } from './lib/data/colorSets';
 import Toast from './lib/Toast.svelte';
+import { cycleTheme, getIsDark, getTheme, getTitleColor } from './lib/theme.svelte.ts';
 
 let selectedSet = $state(SET_MANIFEST[0]?.id ?? '');
 let sortOrder = $state('name');
 let colorFormat = $state('hex');
-let theme = $state(localStorage.getItem('theme') || 'system');
 let cbFilter = $state('none');
 let searchTerm = $state('');
 
@@ -23,16 +23,23 @@ $effect(() => {
   });
 });
 
-const titleColor = $derived.by(() => {
-    if (theme === 'light') return '#555';
-    if (theme === 'dark') return '#aaa';
-    if (
-        typeof window !== 'undefined' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-        return '#aaa';
-    }
-    return '#555';
+$effect(() => {
+  const currentTheme = getTheme();
+  const dark = getIsDark();
+
+  localStorage.setItem('theme', currentTheme);
+
+  if (dark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+
+  if (currentTheme === 'light') {
+    document.querySelector('meta[name="theme-color"][media*="light"]')?.setAttribute('content', '#ffffff');
+  } else if (currentTheme === 'dark') {
+    document.querySelector('meta[name="theme-color"][media*="dark"]')?.setAttribute('content', '#1a1a1a');
+  }
 });
 
 let toastMessage = $state('');
@@ -41,29 +48,6 @@ let toastSuccess = $state(true);
 let toastX = $state(0);
 let toastY = $state(0);
 let toastTimeout: ReturnType<typeof setTimeout>;
-
-$effect(() => {
-    localStorage.setItem('theme', theme);
-
-    const isDark = theme === 'dark' ||
-        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-    if (isDark) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-    }
-
-    if (theme === 'light') {
-        document
-            .querySelector('meta[name="theme-color"][media*="light"]')
-            ?.setAttribute('content', '#ffffff');
-    } else if (theme === 'dark') {
-        document
-            .querySelector('meta[name="theme-color"][media*="dark"]')
-            ?.setAttribute('content', '#1a1a1a');
-    }
-});
 
 function handleCopy(text: string, message: string, x: number, y: number) {
     if (!navigator.clipboard?.writeText) {
@@ -86,12 +70,6 @@ function handleCopy(text: string, message: string, x: number, y: number) {
     );
 }
 
-function cycleTheme() {
-    const order = ['system', 'light', 'dark'];
-    const idx = order.indexOf(theme);
-    theme = order[(idx + 1) % order.length];
-}
-
 function showToast(x: number, y: number) {
     toastX = x;
     toastY = y;
@@ -106,7 +84,7 @@ function showToast(x: number, y: number) {
 }
 </script>
 
-<h1 style="color: {titleColor}">Color Sets</h1>
+<h1 style="color: {getTitleColor()}">Color Sets</h1>
 <header>
     <div class="controls-container">
         <input
@@ -159,8 +137,8 @@ function showToast(x: number, y: number) {
             class="theme-btn"
             onclick={cycleTheme}
             aria-label="Switch theme"
-            title="Theme: {theme}">
-            {#if theme === 'light'}
+            title="Theme: {getTheme()}">
+            {#if getTheme() === 'light'}
                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5"></circle>
                     <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -172,7 +150,7 @@ function showToast(x: number, y: number) {
                     <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                 </svg>
-            {:else if theme === 'dark'}
+            {:else if getTheme() === 'dark'}
                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>

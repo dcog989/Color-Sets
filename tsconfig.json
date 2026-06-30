@@ -20,5 +20,5 @@
     "noUncheckedSideEffectImports": true,
     "types": ["svelte", "vite/client", "node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "vite.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "src/**/*.svelte.ts", "vite.config.ts"]
 }
