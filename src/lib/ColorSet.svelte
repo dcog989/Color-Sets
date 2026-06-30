@@ -37,9 +37,9 @@ const finalData = $derived.by(() => {
         if (sortOrder === 'lightness') return b.lightness - a.lightness;
         if (sortOrder === 'chroma') return b.chroma - a.chroma;
         if (sortOrder === 'hue') {
-            if (a.hue === -1 && b.hue === -1) return a.lightness - b.lightness;
-            if (a.hue === -1) return 1;
-            if (b.hue === -1) return -1;
+            if (a.hue === null && b.hue === null) return a.lightness - b.lightness;
+            if (a.hue === null) return 1;
+            if (b.hue === null) return -1;
 
             if (a.hue !== b.hue) return a.hue - b.hue;
             if (a.lightness !== b.lightness) return a.lightness - b.lightness;

@@ -16,7 +16,7 @@ function getLuminance(instance: Colordx): number {
 export type ProcessedColor = {
   name: string;
   instance: Colordx;
-  hue: number;
+  hue: number | null;
   saturation: number;
   lightness: number;
   luminance: number;
@@ -31,7 +31,7 @@ export function processColorSet(colorObject: Record<string, string>, nameIsColor
     const hsl = instance.toHsl();
     const luminance = getLuminance(instance);
     const oklch = instance.toOklch();
-    let effectiveSortHue = -1;
+    let effectiveSortHue: number | null = null;
     if (hsl.s > 0) effectiveSortHue = Number.isNaN(hsl.h) ? 0 : hsl.h;
 
     return {
