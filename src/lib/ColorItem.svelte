@@ -13,17 +13,10 @@ const { color, useNameForBg, colorFormat, formatLabel, onCopy } = $props<{
 const formatted = $derived(formatColor(color.instance, colorFormat));
 const bgColor = $derived(useNameForBg ? color.name : color.instance.toHex());
 const copyBg = $derived(
-  isLight(color)
+  color.instance.isLight()
     ? color.instance.darken(0.15).toHex()
     : color.instance.lighten(0.15).toHex()
 );
-
-// Threshold of 0.179 is the standard W3C point where
-// black vs white text yields equal contrast ratios.
-// Above this, black text is better. Below, white text is better.
-function isLight(c: ProcessedColor) {
-    return c.luminance > 0.179;
-}
 
 function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
     e.stopPropagation();
@@ -34,7 +27,7 @@ function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
 </script>
 
 <li
-    class="color-item {isLight(color) ? 'light-bg' : 'dark-bg'}"
+    class="color-item {color.instance.isLight() ? 'light-bg' : 'dark-bg'}"
     style="background-color: {bgColor}">
     <button
         type="button"
