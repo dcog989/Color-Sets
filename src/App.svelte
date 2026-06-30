@@ -1,7 +1,7 @@
 <script lang="ts">
 import { version } from '../package.json';
 import ColorSet from './lib/ColorSet.svelte';
-import { loadSetData, SET_MANIFEST } from './lib/data/colorSets';
+import { loadSetData, SET_MANIFEST } from './lib/data/manifest';
 import Toast from './lib/Toast.svelte';
 import { cycleTheme, getIsDark, getTheme, getTitleColor } from './lib/theme.svelte.ts';
 

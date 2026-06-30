@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { ProcessedColor } from './data/colorSets';
+import type { ProcessedColor } from './data/processor';
 import { formatColor } from './formatColor';
 
 const { color, useNameForBg, colorFormat, formatLabel, onCopy } = $props<{

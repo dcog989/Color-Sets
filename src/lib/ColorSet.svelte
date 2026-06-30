@@ -1,6 +1,6 @@
 <script lang="ts">
 import ColorItem from './ColorItem.svelte';
-import { processColorSet } from './data/colorSets';
+import { processColorSet } from './data/processor';
 import { formatColor } from './formatColor';
 
 const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, colorFormat, onCopy } = $props<{
