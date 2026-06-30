@@ -2,10 +2,11 @@
 import type { ProcessedColor } from './data/colorSets';
 import { formatColor } from './formatColor';
 
-const { color, useNameForBg, colorFormat, onCopy } = $props<{
+const { color, useNameForBg, colorFormat, formatLabel, onCopy } = $props<{
     color: ProcessedColor;
     useNameForBg: boolean;
     colorFormat: string;
+    formatLabel: string;
     onCopy: (text: string, message: string, x: number, y: number) => void;
 }>();
 
@@ -24,7 +25,6 @@ function handleCopy(type: 'name' | 'value', text: string, e: MouseEvent) {
     onCopy(text, message, e.clientX, e.clientY);
 }
 
-const formatLabel = $derived(colorFormat.toUpperCase());
 </script>
 
 <li

@@ -175,7 +175,7 @@ function handleExport(e: Event) {
 
             <ul class="color-list" {id}>
                 {#each finalData as color (color.name)}
-                    <ColorItem {color} useNameForBg={useNameAsBg} {colorFormat} {onCopy} />
+                    <ColorItem {color} useNameForBg={useNameAsBg} {colorFormat} {formatLabel} {onCopy} />
                 {/each}
             </ul>
         </fieldset>

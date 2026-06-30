@@ -45,18 +45,23 @@ let toastTimeout: ReturnType<typeof setTimeout>;
 $effect(() => {
     localStorage.setItem('theme', theme);
 
+    const isDark = theme === 'dark' ||
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    if (isDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+
     if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
         document
             .querySelector('meta[name="theme-color"][media*="light"]')
             ?.setAttribute('content', '#ffffff');
     } else if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
         document
             .querySelector('meta[name="theme-color"][media*="dark"]')
             ?.setAttribute('content', '#1a1a1a');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
     }
 });
 

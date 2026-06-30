@@ -40,29 +40,6 @@
   --legend-text-color: #aaa;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg-color: #1a1a1a;
-    --text-color: #ccc;
-    --text-muted: #888;
-    --link-color: #5cb8ff;
-    --header-bg-color: #333;
-    --header-color: hotpink;
-    --page-bg-color: #222;
-    --page-shadow-color: rgba(0, 0, 0, 0.3);
-    --select-bg-color: #333;
-    --select-text-color: #eee;
-    --select-border-color: #555;
-    --select-focus-border-color: lightskyblue;
-    --select-focus-shadow-color: rgba(135, 206, 250, 0.3);
-    --color-item-light-text: #000000;
-    --color-item-dark-text: #ffffff;
-    --color-item-text-hover-bg: rgba(255, 255, 255, 0.1);
-    --fieldset-border-color: #444;
-    --legend-text-color: #aaa;
-  }
-}
-
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -72,16 +49,7 @@ body {
   font-size: 16px;
 }
 
-button.icon-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  cursor: pointer;
-  color: inherit;
-}
-
+button.icon-btn,
 button.text-btn {
   background: none;
   border: none;
