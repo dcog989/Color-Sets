@@ -1,9 +1,12 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [
+    svelte(),
+    ...(process.env.ANALYZE ? [visualizer({ open: true })] : []),
+  ],
   base: '/Color-Sets/',
   build: {
     sourcemap: false,
