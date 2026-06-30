@@ -4,7 +4,7 @@ An interactive color palette viewer for designers and developers. It includes CS
 
 **Go to [Comprehensive Color Sets](https://dcog989.github.io/Color-Sets/)**.
 
-![Comprehensive Color Sets Screenshot](assets/screen-1.png)
+![Comprehensive Color Sets Screenshot](public/images/screen1.webp)
 
 ## Features
 
