@@ -1,6 +1,7 @@
 <script lang="ts">
 import ColorItem from './ColorItem.svelte';
 import { processColorSet } from './data/processor';
+import { exportColors } from './exportFormats';
 import { formatColor } from './formatColor';
 
 const { title, id, rawData, useNameAsBg, sortOrder, searchTerm, colorFormat, onCopy } = $props<{
@@ -56,14 +57,6 @@ function copySetNames(e: MouseEvent) {
     onCopy(text, `Copied ${finalData.length} names!`, e.clientX, e.clientY);
 }
 
-function toVarName(name: string) {
-    return name
-        .toLowerCase()
-        .replace(/[\s/()]+/g, '-')
-        .replace(/-$/, '')
-        .replace(/--/g, '-');
-}
-
 let exportSelect = $state<HTMLSelectElement | undefined>();
 
 function handleExport(e: Event) {
@@ -72,72 +65,12 @@ function handleExport(e: Event) {
     if (!format) return;
     target.value = '';
 
-    let text: string;
-    let label: string;
-
-    const colors = finalData;
-
-    switch (format) {
-        case 'css': {
-            const themeName = toVarName(title);
-            const properties = colors
-                .map((c) => `    --${toVarName(c.name)}: ${formatColor(c.instance, colorFormat)};`)
-                .join('\n');
-            text = `[data-theme="${themeName}"] {\n${properties}\n}`;
-            label = 'CSS theme block';
-            break;
-        }
-        case 'json': {
-            const obj: Record<string, string> = {};
-            for (const c of colors) {
-                obj[c.name] = formatColor(c.instance, colorFormat);
-            }
-            text = JSON.stringify(obj, null, 2);
-            label = 'JSON';
-            break;
-        }
-        case 'scss':
-            text = colors
-                .map((c) => `$${toVarName(c.name)}: ${formatColor(c.instance, colorFormat)};`)
-                .join('\n');
-            label = 'SCSS';
-            break;
-        case 'csv': {
-            const header = `name,value`;
-            const rows = colors
-                .map((c) => `${c.name},${formatColor(c.instance, colorFormat)}`)
-                .join('\n');
-            text = `${header}\n${rows}`;
-            label = 'CSV';
-            break;
-        }
-        case 'tailwind': {
-            const entries = colors
-                .map((c) => `  '${c.name}': '${formatColor(c.instance, colorFormat)}'`)
-                .join(',\n');
-            text = `{\n${entries}\n}`;
-            label = 'Tailwind config';
-            break;
-        }
-        case 'less':
-            text = colors
-                .map((c) => `@${toVarName(c.name)}: ${formatColor(c.instance, colorFormat)};`)
-                .join('\n');
-            label = 'Less';
-            break;
-        case 'text':
-            text = colors
-                .map((c) => `${c.name}  ${formatColor(c.instance, colorFormat)}`)
-                .join('\n');
-            label = 'text';
-            break;
-        default:
-            return;
-    }
+    const result = exportColors(finalData, format, colorFormat, title);
+    if (!result) return;
 
     if (!exportSelect) return;
     const rect = exportSelect.getBoundingClientRect();
-    onCopy(text, `Copied as ${label}!`, rect.left + rect.width / 2, rect.top);
+    onCopy(result.text, `Copied as ${result.label}!`, rect.left + rect.width / 2, rect.top);
 }
 </script>
 
