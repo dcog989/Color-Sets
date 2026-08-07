@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128">
   <title>Three Color Circles Favicon</title>
-  <circle cx="16" cy="10" r="9" fill="#ef4444"/> <!-- Red -->
-  <circle cx="10" cy="22" r="9" fill="#22c55e"/> <!-- Green -->
-  <circle cx="22" cy="22" r="9" fill="#3b82f6"/> <!-- Blue -->
+  <circle cx="16" cy="10" r="9" fill="#ef4444" /> <!-- Red -->
+  <circle cx="10" cy="22" r="9" fill="#22c55e" /> <!-- Green -->
+  <circle cx="22" cy="22" r="9" fill="#3b82f6" /> <!-- Blue -->
 </svg>
