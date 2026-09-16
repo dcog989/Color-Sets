@@ -134,7 +134,7 @@ function showToast(x: number, y: number) {
 
   <div class="theme-toggle">
     <button type="button" class="theme-btn" onclick={cycleTheme} aria-label="Switch theme" title="Theme: {getTheme()}">
-      {#if getTheme() === 'light'}
+      {#if getTheme() === "light"}
         <svg
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +157,7 @@ function showToast(x: number, y: number) {
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-      {:else if getTheme() === 'dark'}
+      {:else if getTheme() === "dark"}
         <svg
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
@@ -194,7 +194,7 @@ function showToast(x: number, y: number) {
   </div>
 </header>
 
-<main style={cbFilter !== 'none' ? `filter: url(#cb-${cbFilter})` : ''}>
+<main style={cbFilter !== "none" ? `filter: url(#cb-${cbFilter})` : ""}>
   {#if currentEntry && currentData}
     <ColorSet
       title={currentEntry.title}

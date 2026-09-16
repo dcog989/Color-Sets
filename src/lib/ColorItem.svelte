@@ -22,18 +22,18 @@ function handleCopy(type: "name" | "value", text: string, e: MouseEvent) {
 }
 </script>
 
-<li class="color-item {isLight ? 'light-bg' : 'dark-bg'}" style="background-color: {bgColor}">
+<li class="color-item {isLight ? "light-bg" : "dark-bg"}" style="background-color: {bgColor}">
   <button
     type="button"
     class="item-bg"
     aria-label="Copy {formatLabel}"
-    onclick={(e) => handleCopy('value', formatted, e)}
+    onclick={(e) => handleCopy("value", formatted, e)}
   ></button>
   <div class="color-info">
     <button
       type="button"
       class="color-name color-swatch-action text-btn"
-      onclick={(e) => handleCopy('name', color.name, e)}
+      onclick={(e) => handleCopy("name", color.name, e)}
     >
       {color.name}
     </button>
@@ -42,7 +42,7 @@ function handleCopy(type: "name" | "value", text: string, e: MouseEvent) {
   <button
     type="button"
     class="color-copy-group color-swatch-action icon-btn"
-    onclick={(e) => handleCopy('value', formatted, e)}
+    onclick={(e) => handleCopy("value", formatted, e)}
     aria-label="Copy {formatLabel}"
     style="background-color: {copyBg}"
   >
